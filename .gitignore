@@ -41,6 +41,12 @@ sandbox/
 *.bkp
 *.dtmp
 
+# HDF5 files
+*.h5
+
+# local development environment
+AdaptiveSG/
+
 
 # macos files
 .DS_Store
