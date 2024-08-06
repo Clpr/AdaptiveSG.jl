@@ -25,6 +25,9 @@ To install and run the DEV-AdaptiveSG project, follow these steps:
     1. To install packages, check: `https://pkgdocs.julialang.org/v1/managing-packages/`
     1. `Plots.jl` is helpful in visualization
 1. Clone the repository: `git clone https://github.com/Clpr/DEV-AdaptiveSG.git`
+1. Start Julia with multi-threads (the training of ASG uses multi-threads)
+    1. Use `julia --threads 4` to start a Julia session, where 4 can be replaced with other numbers
+    1. Within a Julia session, use `Threads.nthreads()` to see the number of available threads
 1. Import the main module to your code using `asg = include("./src/AdaptiveSG.jl")`
 
 ## File tree
