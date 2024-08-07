@@ -28,6 +28,12 @@ end # normalize()
 
 Normalize the input scalar `x` to the domain `[0,1]` using the `Normalizer{d}`,
 where `dims` is the dimension of the scalar.
+
+## Notes
+- This method is for affining a **point** `x[j]` along `j` dimension, but not 
+the distance between any two points. To affine a distance `z:=x2[j]-x1[j]`, one
+should directly do `(x2[j]-x1[j]) / nzer.gap[j]`. The intercept (lower bound) is
+cancelled out in the subtraction.
 """
 function normalize(x::Float64, nzer::Normalizer{d}, dims::Int)::Float64 where d
     return (x - nzer.lb[dims]) / nzer.gap[dims]
@@ -62,6 +68,12 @@ end # denormalize()
 
 Denormalize the input scalar `x` from `[0,1]` to its original domain using the
 `Normalizer{d}`, where `dims` is the dimension of the scalar.
+
+## Notes
+- This method is for affining a **point** `x[j]` along `j` dimension, but not 
+the distance between any two points. To affine a distance `z:=x2[j]-x1[j]`, one
+should directly do `(x2[j]-x1[j]) * nzer.gap[j]`. The intercept (lower bound) is
+cancelled out in the subtraction.
 """
 function denormalize(x::Float64, nzer::Normalizer{d},dims::Int)::Float64 where d
     return x * nzer.gap[dims] + nzer.lb[dims]
