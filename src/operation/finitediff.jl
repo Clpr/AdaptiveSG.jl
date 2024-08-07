@@ -28,9 +28,9 @@ Applying this stencil leads to the same result as `evaluate(G, get_x(node))`.
 ## Notes
 - To force the stencil to include all nodes, set `dropzeros = false`, or set the
 `atol` to a very small value such as `Inf`
-- This function in fact constructs the stencil of the de-hierarchirization oper-
-ator at the given `node`. The de-hierarchirization operator corresponds to the 
-notation `E` in the sparse grid literature.
+- This function constructs the stencil of the de-hierarchization operator at the
+given `node`. The de-hierarchization operator corresponds to the notation `E` in
+the sparse grid literature.
 """
 function get_stencil_node(
     node::Node{d},
