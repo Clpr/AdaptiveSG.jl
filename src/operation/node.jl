@@ -555,7 +555,7 @@ function get_all_1d_nodal_nodes_in_order(l::Int)::Vector{Node{1}}
         den = power2(l - 1)
         for i in 0:power2(l-1)
             lnew, inew = fraction2li(i // den)
-            push!(res, Node{1}((lnew,), (inew,), lnew))
+            push!(res, Node{1}((lnew,), (inew,)))
         end
         return res
     end
