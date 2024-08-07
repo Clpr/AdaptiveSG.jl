@@ -160,7 +160,10 @@ function update_all!(
     fnew::Dictionary{Node{d}, Float64} ;
     printlevel::String = "iter"
 ) where d
-    validate_f2fit!(f2fit, d)
+    if length(G) != length(fnew)
+        throw(ArgumentError("not enough function values for all nodes."))
+    end
+
     if length(G) == 0
         throw(ArgumentError("empty grid. Consider train!() instead."))
     end
