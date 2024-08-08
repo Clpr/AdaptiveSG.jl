@@ -30,7 +30,7 @@ function get_spvec_node(
     G::AdaptiveSparseGrid{d} ;
     dropzeros::Bool = true,
     atol::Float64  = 1e-16
-)::SparseVector{Float64,Int}
+)::SparseVector{Float64,Int} where {d}
     Is = Int[]
     Vs = Float64[]
     x0::SVector{d,Float64} = get_x(p)
