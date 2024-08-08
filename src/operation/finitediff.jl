@@ -1,8 +1,47 @@
+export get_spvec_node
+
 export get_stencil_node
 # export get_stencil_gradient
 # export get_stencil_hessian
 export get_dehierarchization_matrix
 export get_hierarchization_matrix
+
+
+# ------------------------------------------------------------------------------
+"""
+    get_spvec_node(
+        p::Node{d},
+        G::AdaptiveSparseGrid{d} ;
+        dropzeros::Bool = true,
+        atol::Float64  = 1e-16
+    )::SparseVector{Float64,Int}
+
+Create a `SparseVector{Float64,Int}` of representing a node using all the nodes
+in an ASG `G`. The `p` node can be any node but not necessarily in the grid `G`.
+
+## Arguments
+- `p::Node{d}`: The node to be represented.
+- `G::AdaptiveSparseGrid{d}`: The ASG.
+- `dropzeros::Bool`: Drop the zero weights. Default is `true`.
+- `atol::Float64`: Abs tolerance to consider a weight as zero. Default `1e-16`.
+"""
+function get_spvec_node(
+    p::Node{d},
+    G::AdaptiveSparseGrid{d} ;
+    dropzeros::Bool = true,
+    atol::Float64  = 1e-16
+)::SparseVector{Float64,Int}
+    Is = Int[]
+    Vs = Float64[]
+    x0::SVector{d,Float64} = get_x(p)
+    for (i, p2) in enumerate(keys(G.nv))
+        w = ϕ_unsafe(x0, p2)
+        if dropzeros && isapprox(w, 0.0, atol = atol); continue; end
+        push!(Is, i)
+        push!(Vs, w)
+    end
+    return sparse(Is, Vs, length(G))
+end # get_spvec_node()
 
 
 # ------------------------------------------------------------------------------
