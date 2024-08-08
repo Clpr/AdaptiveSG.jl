@@ -40,7 +40,7 @@ function get_spvec_node(
         push!(Is, i)
         push!(Vs, w)
     end
-    return sparse(Is, Vs, length(G))
+    return sparsevec(Is, Vs, length(G))
 end # get_spvec_node()
 
 
