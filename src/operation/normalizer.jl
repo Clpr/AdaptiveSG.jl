@@ -79,3 +79,39 @@ function denormalize(x::Float64, nzer::Normalizer{d},dims::Int)::Float64 where d
     return x * nzer.gap[dims] + nzer.lb[dims]
 end # denormalize()
 
+
+# ------------------------------------------------------------------------------
+"""
+    normalize_dist_along(
+        dist_original_space::Float64, 
+        nzer::Normalizer{d}, 
+        dims::Int
+    )::Float64 where d
+
+Normalize the input distance `dist` along the `dims` dimension to the domain 
+`[0,1]`. This is different from normalizing a point.
+"""
+function normalize_dist_along(
+    dist_original_space::Float64, 
+    nzer::Normalizer{d}, 
+    dims::Int
+)::Float64 where d
+    return dist_original_space / nzer.gap[dims]
+end # normalize_dist_along()
+
+
+# ------------------------------------------------------------------------------
+"""
+    denormalize_dist_along(
+        dist_normalized::Float64, 
+        nzer::Normalizer{d}, 
+        dims::Int
+    )::Float64 where d
+"""
+function denormalize_dist_along(
+    dist_normalized::Float64, 
+    nzer::Normalizer{d}, 
+    dims::Int
+)::Float64 where d
+    return dist_normalized * nzer.gap[dims]
+end # denormalize_dist_along()
