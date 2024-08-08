@@ -1,4 +1,5 @@
 export normalize, denormalize
+export normalize_dist_along, denormalize_dist_along
 
 
 # ------------------------------------------------------------------------------
