@@ -174,6 +174,14 @@ high dimensional Interpolant.
 - The order of nodes in the stencil is supposed to be NOT important. One should
 NOT rely on the order of nodes in the stencil.
 - This struct is element-wise mutable and passed by reference.
+
+## LinearStencil vs. SparseVector
+- If all used nodes are in the set of grid nodes of an ASG, then the two repres-
+entations are equivalent in computation. However, the `LinearStencil` allows you
+to use any nodes which may not be in the grid. This is useful when you want to
+write a human-readable stencil in the naive time iteration (explicit method) of
+a PDE solver, or useful when you have very complicated stencil arithmetic before
+applying the final stencil.
 """
 struct LinearStencil{d}
     weights::Dictionary{Node{d}, Float64}
