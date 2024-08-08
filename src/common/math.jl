@@ -169,10 +169,26 @@ function spinv_upper(
 end # spinv_upper()
 
 
+# ------------------------------------------------------------------------------
+"""
+    unitvec(d::Int, j::Int)::Vector{Float64}
+
+Return a unit vector of dimension `d` with the `j`-th element being 1.0 and all
+"""
+function unitvec(d::Int, j::Int)::Vector{Float64}
+    v = zeros(Float64, d); v[j] = 1.0; return v
+end # unitvec()
 
 
+# ------------------------------------------------------------------------------
+"""
+    spunitvec(d::Int, j::Int)::SparseVector{Float64, Int}
 
-
+Return a sparse unit vector of dimension `d` with the `j`-th element being 1.0.
+"""
+function spunitvec(d::Int, j::Int)::SparseVector{Float64, Int}
+    return sparsevec(Int[j,], Float64[1.0,], d)
+end # spunitvec()
 
 
 
