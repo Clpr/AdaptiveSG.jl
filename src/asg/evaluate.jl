@@ -71,7 +71,7 @@ function evaluate(
     node::Node{d} ;
     untildepth::Int = 0,
     validonly::Bool = false
-)::Float64 where {d, T<:AbstractVector{Float64}}
+)::Float64 where {d}
     return evaluate(
         G, get_x(node),
         untildepth = untildepth,
