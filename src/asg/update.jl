@@ -114,6 +114,14 @@ function update_all!(
     # check self-containedness and udpate the information
     G.selfcontained = is_selfcontained(G)
 
+    # manually update the node values at depth = 1
+    tmpnode = Node{d}(
+        ones(Int, d) |> Tuple,
+        ones(Int, d) |> Tuple,
+    )
+    tmpf = f2fit(get_x(tmpnode))
+    G.nv[tmpnode] = NodeValue{d}(tmpf, tmpf)
+
     # finally, update the node values, starting from depth = 2
     for lnow in 2:maxdepth
         if printlevel == "iter"
@@ -178,6 +186,14 @@ function update_all!(
 
     # check self-containedness and udpate the information
     G.selfcontained = is_selfcontained(G)
+
+    # manually update the node values at depth = 1
+    tmpnode = Node{d}(
+        ones(Int, d) |> Tuple,
+        ones(Int, d) |> Tuple,
+    )
+    tmpf = fnew[tmpnode]
+    G.nv[tmpnode] = NodeValue{d}(tmpf, tmpf)
 
     # finally, update the node values (starting from depth 2)
     for lnow in 2:maxdepth
