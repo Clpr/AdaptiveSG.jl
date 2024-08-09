@@ -56,6 +56,30 @@ end # evaluate()
 
 
 # ------------------------------------------------------------------------------
+"""
+    evaluate(
+        G::AdaptiveSparseGrid{d},
+        node::Node{d} ;
+        untildepth::Int = 0,
+        validonly::Bool = false
+    )::Float64 where {d, T<:AbstractVector{Float64}}
+
+Evaluate the multi-linear ASG interpolant at a node `node`. Returns a `Float64`.
+"""
+function evaluate(
+    G::AdaptiveSparseGrid{d},
+    node::Node{d} ;
+    untildepth::Int = 0,
+    validonly::Bool = false
+)::Float64 where {d, T<:AbstractVector{Float64}}
+    return evaluate(
+        G, get_x(node),
+        untildepth = untildepth,
+        validonly = validonly
+    )
+end # evaluate()
+
+# ------------------------------------------------------------------------------
 function _private_evaluate_allnodes_alldepth(
     G::AdaptiveSparseGrid{d},
     x::T
