@@ -98,7 +98,7 @@ function train!(
         #       nodes as vectors of `Pair{Node{d}, NTuple{2,Float64}}`. After th
         #       e loop, we insert the new nodes into the hash table.
         # 
-        # Tips: such trail-collect-insert strategy allows us to safely evaluate
+        # Tips: such trial-collect-insert strategy allows us to safely evaluate
         #       the whole interpolant for all candidate children nodes before
         #       inserting them into the hash table.
 
