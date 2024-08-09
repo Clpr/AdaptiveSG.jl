@@ -1,5 +1,6 @@
 export Node, NodeValue
 export AdaptiveSparseGrid
+export RegularSparseGrid
 export YellowPages
 export LinearStencil
 export Normalizer
@@ -95,6 +96,27 @@ mutable struct AdaptiveSparseGrid{d}
     rtol         ::Float64
     selfcontained::Bool
 end # AdaptiveSparseGrid{d}
+
+
+# ------------------------------------------------------------------------------
+"""
+    RegularSparseGrid{d}
+
+A generic `d`-dim regular sparse grid (RSG) type. It is a special case of the
+ASG where the grid is regular.
+
+## Fields
+- `nv::Dictionary{Node{d}, NodeValue{d}}`: a mapping from `Node{d}` to the inte-
+rpolant nodal and hierarchical coefficients
+- `depth::Int`: the depth of the grid, `:=maximum(get_depth.(keys(nv)))`
+
+## Notes
+- An RSG can be adapted to an ASG using `adapt!()` method.
+"""
+mutable struct RegularSparseGrid{d}
+    nv           ::Dictionary{Node{d}, NodeValue{d}}
+    depth        ::Int
+end
 
 
 # ------------------------------------------------------------------------------
@@ -267,6 +289,10 @@ function Base.show(io::IO, asg::AdaptiveSparseGrid{d}) where d
         ", rtol = ", asg.rtol, 
         ", selfcontained = ", asg.selfcontained, ")"
     )
+end
+# ------------------------------------------------------------------------------
+function Base.show(io::IO, rsg::RegularSparseGrid{d}) where d
+    print(io, "RegularSparseGrid{", d, "}(depth = ", rsg.depth, ")")
 end
 # ------------------------------------------------------------------------------
 function Base.show(io::IO, yp::YellowPages{d}) where d
