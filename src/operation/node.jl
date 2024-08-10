@@ -574,3 +574,54 @@ function get_dist_along(node1::Node{d}, node2::Node{d}, j::Int)::Float64 where d
     return get_x(node2.ls[j], node2.is[j]) - get_x(node1.ls[j], node1.is[j])
 end
 
+
+# ------------------------------------------------------------------------------
+"""
+    get_all_1d_regular_index(l::Int)::Vector{Int}
+
+Return all the indices of the regular sparse nodes of level `l`.
+
+## Notes
+- If `l == 1`, then only the root node (index 1) is returned.
+- If `l == 2`, then only the two boundary nodes (index 0 and 2) are returned.
+- If `l > 2`, then all the odd indices from 1 to 2^(l-1)-1 are returned.
+"""
+function get_all_1d_regular_index(l::Int)::Vector{Int}
+    if l > 2
+        return collect(1:2:(power2(l-1) - 1))
+    elseif l == 2
+        return Int[0, 2]
+    elseif l == 1
+        return Int[1,]
+    else
+        throw(ArgumentError("invalid level $l"))
+    end
+end # get_all_1d_regular_index()
+
+
+# ------------------------------------------------------------------------------
+"""
+    glue(nodes::Node...)::Node
+
+Return a new node by gluing the given nodes by dimension. The new node's dimens-
+ion is the sum of the input nodes' dimensions. The new node's level-index pairs
+are the concatenation of the input nodes' level-index pairs.
+
+This function is used to rasing the dimension of the nodes.
+
+For example, let `p1 = Node{1}((1,),(1,))` be the midpoint 0.5 of the 1st dimen-
+ion; let `p2 = Node{1}((2,),(0,))` be the left boundary point of the 2nd dimens-
+ion. Then, `glue(p1, p2)` returns a new node `Node{2}((1,2),(1,0))` which is the
+midpoint of the "bottom" edge of the 2-dim hypercube.
+"""
+function glue(nodes::Node...)::Node
+    lvls = Int[]
+    idxs = Int[]
+    d    = 0
+    for p in nodes
+        d += typeof(p).parameters[1]
+        append!(lvls, p.ls)
+        append!(idxs, p.is)
+    end
+    return Node{d}(lvls |> NTuple{d,Int}, idxs |> NTuple{d,Int})
+end # glue()
