@@ -10,6 +10,8 @@ export get_boundaryflag                # for boundary check
 export get_all_1d_nodal_nodes_in_order # for quick creating nodal grid for test
 export get_dist_along # to compute mesh step size along a dimension
 
+export get_all_1d_regular_index # for regular sparse grid index
+export glue # to raise the dimension of the nodes
 
 # ------------------------------------------------------------------------------
 """
