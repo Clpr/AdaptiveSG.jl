@@ -50,6 +50,40 @@ end
 
 
 # ------------------------------------------------------------------------------
+function RegularSparseGrid{d}(max_depth::Int, max_levels::NTuple{d,Int}) where d
+    # where `levels` is the maximum levels along each dimension
+    # the levels are filtered using the rule `|levels| <= depth`
+    # accuracy level = max_depth of the tree
+
+    if any(max_levels .< 1); throw(ArgumentError("levels must be >= 1")); end
+
+    # filter feasible levels & collect nodes
+    nodes = Node{d}[]
+
+    for ks in Iterators.product([1:l for l in max_levels]...)
+        if sum(ks) <= (max_depth + d - 1)
+            # given the levels by dimension, collect node indices of the levels
+            itr = Iterators.product([
+                get_all_1d_regular_index(k) for k in ks
+            ]...)
+            for i in itr
+                push!(nodes, Node{d}(ks, i))
+            end
+        end
+    end
+
+    return RegularSparseGrid{d}(
+        Dictionary{Node{d}, NodeValue{d}}(
+            nodes,
+            Vector{NodeValue{d}}(undef, length(nodes))
+        ),
+        max_levels,
+        max_depth,
+    )
+end # RegularSparseGrid{d}
+
+
+# ------------------------------------------------------------------------------
 """
     YellowPages{d}(
         G::AdaptiveSparseGrid{d} ;

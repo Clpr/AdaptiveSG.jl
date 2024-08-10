@@ -108,14 +108,19 @@ ASG where the grid is regular.
 ## Fields
 - `nv::Dictionary{Node{d}, NodeValue{d}}`: a mapping from `Node{d}` to the inte-
 rpolant nodal and hierarchical coefficients
-- `depth::Int`: the depth of the grid, `:=maximum(get_depth.(keys(nv)))`
+- `max_levels::NTuple{d, Int}`: the maximum levels along each dimension
+- `max_depth::Int`: the max depth of the grid, i.e. accurary/refinement level
 
 ## Notes
-- An RSG can be adapted to an ASG using `adapt!()` method.
+- An RSG can be adapted to an ASG using `adapt!()` method; or simply convert it
+to an ASG using `AdaptiveSparseGrid{d}(rsg)`.
+- One can show that the depth of the tree representation is equal to the so call
+"accuracy/refinement level" in the literature.
 """
 mutable struct RegularSparseGrid{d}
     nv           ::Dictionary{Node{d}, NodeValue{d}}
-    depth        ::Int
+    max_levels   ::NTuple{d, Int}
+    max_depth    ::Int
 end
 
 
@@ -292,7 +297,7 @@ function Base.show(io::IO, asg::AdaptiveSparseGrid{d}) where d
 end
 # ------------------------------------------------------------------------------
 function Base.show(io::IO, rsg::RegularSparseGrid{d}) where d
-    print(io, "RegularSparseGrid{", d, "}(depth = ", rsg.depth, ")")
+    print(io, "RegularSparseGrid{", d, "}(depth = ", rsg.max_depth, ")")
 end
 # ------------------------------------------------------------------------------
 function Base.show(io::IO, yp::YellowPages{d}) where d
