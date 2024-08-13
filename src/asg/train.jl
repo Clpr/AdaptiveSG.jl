@@ -227,5 +227,9 @@ function train!(
             )
         end 
     end
+
+    # update the max levels
+    G.max_levels = get_maxlevels(G) |> Tuple
+
     return nothing
 end # train!

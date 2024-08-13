@@ -43,6 +43,7 @@ function AdaptiveSparseGrid{d}(max_depth::Int ; rtol::Float64 = 1e-2) where d
         Dictionary{Node{d}, NodeValue{d}}(), # nv
         0,                                   # depth
         max_depth,                           # max_depth
+        ntuple(i -> -1, d),                  # max_levels
         rtol,                                # rtol
         false                                # selfcontained
     )

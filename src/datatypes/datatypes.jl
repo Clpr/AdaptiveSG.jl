@@ -68,6 +68,7 @@ rpolant nodal and hierarchical coefficients
 - `depth::Int`: the depth of the grid, `:=maximum(get_depth.(keys(nv)))`
 - `max_depth::Int`: the maximum depth of the grid possible. The tree is not allo
 wed to grow beyond this depth
+- `max_levels::NTuple{d, Int}`: the maximum levels along each dimension
 - `rtol::Float64`: the relative tolerance for the hierarchical coefficients, wh-
 ich is the threshold for adding a new node. If the training process converges,
 then for all points `x` in the domain, the relative interpolation error is no
@@ -88,11 +89,15 @@ by the constructor.
 - For multiple dimension functions, the order of nodes in `nv` is not guaranteed
 to be sorted by dimension. This tip reminds of using scatter plots.
 - This struct is mutable and passed by reference.
+- The `max_levels` provides information about the underlying equivalent dense
+grid, or grid refinement, along each dimension. It determines the ghost mesh
+step size in the ghost node method.
 """
 mutable struct AdaptiveSparseGrid{d}
     nv           ::Dictionary{Node{d}, NodeValue{d}}
     depth        ::Int
     max_depth    ::Int
+    max_levels   ::NTuple{d, Int}
     rtol         ::Float64
     selfcontained::Bool
 end # AdaptiveSparseGrid{d}
