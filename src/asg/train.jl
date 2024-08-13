@@ -233,3 +233,68 @@ function train!(
 
     return nothing
 end # train!
+
+
+# ------------------------------------------------------------------------------
+"""
+    train!(
+        G::RegularSparseGrid{d}, 
+        f2fit::Function ;
+        printlevel::String = "iter"
+    ) where d
+
+Train the regular sparse grid `G` by doing residual fitting on the function
+`f2fit` over all pre-determined nodes of the grid.
+
+The function `f2fit` must be able to accept a `SVector{d, Float64}` as the only
+position argument and return a single `Float64`. A validation check is done.
+
+## Notes
+- The training process of RSG is equivalent to the update process of ASG, so it
+can be done to a trained RSG for multiple times.
+"""
+function train!(
+    G::RegularSparseGrid{d}, 
+    f2fit::Function ;
+    printlevel::String = "iter"
+) where d
+    
+    # use the same idea as the `update_all!()` of the ASG: taking the grid
+    # structure as given, only update node values.
+
+    validate_f2fit!(f2fit, d)
+    if length(G) == 0
+        throw(ArgumentError("empty grid. RSG not correctly constructed."))
+    end
+
+    # manually update the node values at depth = 1
+    tmpnode = Node{d}(
+        ones(Int, d) |> Tuple,
+        ones(Int, d) |> Tuple,
+    )
+    tmpf = f2fit(get_x(tmpnode))
+    G.nv[tmpnode] = NodeValue{d}(tmpf, tmpf)
+
+    # finally, update the node values, starting from depth = 2
+    for lnow in 2:G.max_depth
+        if printlevel == "iter"
+            println("updating depth = $lnow...")
+        end
+        for node in keys(G.nv)
+            if node.depth == lnow
+                x = get_x(node)
+                f = f2fit(x)
+                α = f - evaluate(
+                    G, x,
+                    untildepth = node.depth - 1,
+                    validonly  = true
+                )
+                G.nv[node] = NodeValue{d}(f, α)
+            end # if
+        end # node
+    end # lnow, (node, nval)
+    if (printlevel == "iter") || (printlevel == "final")
+        println("The RSG is trained.")
+    end 
+    return nothing
+end # train!()
