@@ -306,6 +306,7 @@ function Base.show(io::IO, rsg::RegularSparseGrid{d}) where d
         io, 
         "RegularSparseGrid{", d, 
         "}(depth = ", rsg.max_depth, ", ",
+        "#nodes = ", length(rsg.nv), ", ",
         "max_levels = ", rsg.max_levels, ")"
     )
 end
