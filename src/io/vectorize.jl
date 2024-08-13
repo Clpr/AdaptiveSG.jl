@@ -10,9 +10,9 @@ export vectorize_depth
 """
     vectorize_levels(G::AbstractSparseGrid{d})::Matrix{Int}
 
-Vectorize the levels of the nodes in the adaptive sparse grid `G`. The result is
-a matrix where each row corresponds to the level of a node in the grid, and the
-columns correspond to the dimensions of the grid in the order of the dimensions.
+Vectorize the levels of the nodes in the sparse grid `G`. The result is a matrix
+where each row corresponds to the level of a node in the grid, and the columns 
+correspond to the dimensions of the grid in the order of the dimensions.
 
 Returns a `length(G) * d` matrix. For the same `G`, the row order across the 
 vectorized quantities is the same (stacking order).
@@ -30,8 +30,8 @@ end # matrixize_levels()
 """
     vectorize_indices(G::AbstractSparseGrid{d})::Matrix{Int}
 
-Vectorize the indices of the nodes in the adaptive sparse grid `G`. The result 
-is a matrix where each row corresponds to the index of a node in the grid, and
+Vectorize the indices of the nodes in the sparse grid `G`. The result is a 
+matrix where each row corresponds to the index of a node in the grid, and
 the columns correspond to the dimensions of the grid in the order of the dimens-
 ions.
 
@@ -51,9 +51,9 @@ end # vectorize_indices()
 """
     vectorize_nodal(G::AbstractSparseGrid{d})::Vector{Float64}
 
-Vectorize the nodal coefficient (function value) of the nodes in the adaptive
-sparse grid `G`. The result is a vector where each element corresponds to the
-function value of a node in the grid.
+Vectorize the nodal coefficient (function value) of the nodes in the sparse grid
+`G`. The result is a vector where each element corresponds to the function value
+of a node in the grid.
 
 Returns a `length(G)` vector. For the same `G`, the row order across the 
 vectorized quantities is the same (stacking order).
@@ -71,9 +71,9 @@ end # vectorize_nodal()
 """
     vectorize_hierarchical(G::AbstractSparseGrid{d})::Vector{Float64} where d
 
-Vectorize the hierarchical coefficient of the nodes in the adaptive sparse grid
-`G`. The result is a vector where each element corresponds to the hierarchical
-coefficient of a node in the grid.
+Vectorize the hierarchical coefficient of the nodes in the sparse grid `G`. The 
+result is a vector where elements correspond to the hierarchical coefficient of 
+a node in the grid.
 
 Returns a `length(G)` vector. For the same `G`, the row order across the
 vectorized quantities is the same (stacking order).
@@ -93,10 +93,10 @@ end # vectorize_hierarchical()
 """
     vectorize_x(G::AbstractSparseGrid{d})::Matrix{Float64} where d
 
-Vectorize the coordinate values of the nodes in the adaptive sparse grid `G`.
-The result is a matrix where each row corresponds to the coordinate values of a
-node in the grid, and the columns correspond to the dimensions of the grid in
-the order of the dimensions.
+Vectorize the coordinate values of the nodes in the sparse grid `G`. The result 
+is a matrix where each row corresponds to the coordinate values of a node in the
+grid, and the columns correspond to the dimensions of the grid in the order of 
+the dimensions.
 
 Returns a `length(G) * d` matrix. For the same `G`, the row order across the 
 vectorized quantities is the same (stacking order).
@@ -114,8 +114,8 @@ end # vectorize_x()
 """
     vectorize_depth(G::AbstractSparseGrid{d})::Vector{Int} where d
 
-Vectorize the depth of the nodes in the adaptive sparse grid `G`. The result is
-a vector where each element corresponds to the depth of a node in the grid.
+Vectorize the depth of the nodes in the sparse grid `G`. The result is a vector 
+where each element corresponds to the depth of a node in the grid.
 
 Returns a `length(G)` vector. For the same `G`, the row order across the vector-
 ized quantities is the same (stacking order).
