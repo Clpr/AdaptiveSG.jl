@@ -302,7 +302,12 @@ function Base.show(io::IO, asg::AdaptiveSparseGrid{d}) where d
 end
 # ------------------------------------------------------------------------------
 function Base.show(io::IO, rsg::RegularSparseGrid{d}) where d
-    print(io, "RegularSparseGrid{", d, "}(depth = ", rsg.max_depth, ")")
+    print(
+        io, 
+        "RegularSparseGrid{", d, 
+        "}(depth = ", rsg.max_depth, ", ",
+        "max_levels = ", rsg.max_levels, ")"
+    )
 end
 # ------------------------------------------------------------------------------
 function Base.show(io::IO, yp::YellowPages{d}) where d
