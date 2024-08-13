@@ -1,10 +1,20 @@
 export Node, NodeValue
+export AbstractSparseGrid
 export AdaptiveSparseGrid
 export RegularSparseGrid
 export YellowPages
 export LinearStencil
 export Normalizer
 
+
+# ------------------------------------------------------------------------------
+"""
+    AbstractSparseGrid{d} <: Any
+
+An abstract type for sparse grid types. It is used to define the common fields
+and methods for sparse grid types.
+"""
+abstract type AbstractSparseGrid{d} <: Any end
 
 
 # ------------------------------------------------------------------------------
@@ -93,7 +103,7 @@ to be sorted by dimension. This tip reminds of using scatter plots.
 grid, or grid refinement, along each dimension. It determines the ghost mesh
 step size in the ghost node method.
 """
-mutable struct AdaptiveSparseGrid{d}
+mutable struct AdaptiveSparseGrid{d} <: AbstractSparseGrid{d}
     nv           ::Dictionary{Node{d}, NodeValue{d}}
     depth        ::Int
     max_depth    ::Int
@@ -122,7 +132,7 @@ to an ASG using `AdaptiveSparseGrid{d}(rsg)`.
 - One can show that the depth of the tree representation is equal to the so call
 "accuracy/refinement level" in the literature.
 """
-mutable struct RegularSparseGrid{d}
+mutable struct RegularSparseGrid{d} <: AbstractSparseGrid{d}
     nv           ::Dictionary{Node{d}, NodeValue{d}}
     max_levels   ::NTuple{d, Int}
     max_depth    ::Int
