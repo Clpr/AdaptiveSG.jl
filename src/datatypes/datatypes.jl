@@ -306,6 +306,7 @@ function Base.show(io::IO, asg::AdaptiveSparseGrid{d}) where d
     print(
         io, 
         "AdaptiveSparseGrid{", d, "}(depth = ", asg.depth, 
+        ", #nodes = ", length(asg.nv),
         ", rtol = ", asg.rtol, 
         ", selfcontained = ", asg.selfcontained, ")"
     )
