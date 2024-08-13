@@ -51,10 +51,19 @@ end
 
 
 # ------------------------------------------------------------------------------
+"""
+    RegularSparseGrid{d}(max_depth::Int, max_levels::NTuple{d,Int}) where d
+
+Create a `d`-dim regular sparse grid with the given `max_depth` and `max_levels`
+along each dimension, where `max_levels` is a tuple of integers indicating the
+maximum levels along each dimension; `max_depth` is the depth of the tree, also
+the so-called accuracy/refinement level of the grid.
+
+## Notes
+- All by-dimension level combinations `k` are kept such that sum(k) <= max_depth
++ d - 1.
+"""
 function RegularSparseGrid{d}(max_depth::Int, max_levels::NTuple{d,Int}) where d
-    # where `levels` is the maximum levels along each dimension
-    # the levels are filtered using the rule `|levels| <= depth`
-    # accuracy level = max_depth of the tree
 
     if any(max_levels .< 1); throw(ArgumentError("levels must be >= 1")); end
 
