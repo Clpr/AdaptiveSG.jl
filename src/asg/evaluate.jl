@@ -4,17 +4,17 @@ export evaluate
 # ------------------------------------------------------------------------------
 """
     evaluate(
-        G::AdaptiveSparseGrid{d},
+        G::AbstractSparseGrid{d},
         x::T ;
         untildepth::Int = 0,
         validonly::Bool = false
     )::Float64 where {d, T<:AbstractVector{Float64}}
 
-Evaluate the multi-linear ASG interpolant at a point `x` which is in the hyper-
-cube `[0,1]^d`. Returns a scalar value.
+Evaluate the multi-linear ASG/RSG interpolant at a point `x` which is in the hy-
+percube `[0,1]^d`. Returns a scalar value.
 
 ## Arguments
-- `G::AdaptiveSparseGrid{d}`: the adaptive sparse grid
+- `G::AbstractSparseGrid{d}`: the adaptive or regular sparse grid
 - `x::T`: the point to evaluate, where `T` is a vector-like type
 - `untildepth::Int`: evaluate only up to this depth (inclusive). Any value less
 than 1 means evaluating all nodes.
@@ -33,7 +33,7 @@ please convert it to a vector-like before calling this function for consistency.
 - If `d==1`, then use something like `Float64[0.5,]`
 """
 function evaluate(
-    G::AdaptiveSparseGrid{d},
+    G::AbstractSparseGrid{d},
     x::T ;
     untildepth::Int = 0,
     validonly::Bool = false
@@ -58,16 +58,16 @@ end # evaluate()
 # ------------------------------------------------------------------------------
 """
     evaluate(
-        G::AdaptiveSparseGrid{d},
+        G::AbstractSparseGrid{d},
         node::Node{d} ;
         untildepth::Int = 0,
         validonly::Bool = false
     )::Float64 where {d, T<:AbstractVector{Float64}}
 
-Evaluate the multi-linear ASG interpolant at a node `node`. Returns a `Float64`.
+Evaluate the multi-linear ASG/RSG interpolant at a node `node`.
 """
 function evaluate(
-    G::AdaptiveSparseGrid{d},
+    G::AbstractSparseGrid{d},
     node::Node{d} ;
     untildepth::Int = 0,
     validonly::Bool = false
@@ -81,7 +81,7 @@ end # evaluate()
 
 # ------------------------------------------------------------------------------
 function _private_evaluate_allnodes_alldepth(
-    G::AdaptiveSparseGrid{d},
+    G::AbstractSparseGrid{d},
     x::T
 )::Float64 where {d, T<:AbstractVector{Float64}}
     fx = 0.0
@@ -92,7 +92,7 @@ function _private_evaluate_allnodes_alldepth(
 end
 # ------------------------------------------------------------------------------
 function _private_evaluate_allnodes_untildepth(
-    G::AdaptiveSparseGrid{d},
+    G::AbstractSparseGrid{d},
     x::T,
     depth::Int
 )::Float64 where {d, T<:AbstractVector{Float64}}
@@ -106,7 +106,7 @@ function _private_evaluate_allnodes_untildepth(
 end
 # ------------------------------------------------------------------------------
 function _private_evaluate_validnodes_alldepth(
-    G::AdaptiveSparseGrid{d},
+    G::AbstractSparseGrid{d},
     x::T
 )::Float64 where {d, T<:AbstractVector{Float64}}
     fx = 0.0
@@ -119,7 +119,7 @@ function _private_evaluate_validnodes_alldepth(
 end
 # ------------------------------------------------------------------------------
 function _private_evaluate_validnodes_untildepth(
-    G::AdaptiveSparseGrid{d},
+    G::AbstractSparseGrid{d},
     x::T,
     depth::Int
 )::Float64 where {d, T<:AbstractVector{Float64}}
