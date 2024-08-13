@@ -20,14 +20,13 @@ Return the ghost mesh step size `h` of the underlying nodal grid, along each di-
 mension of the adaptive sparse grid `G`. The ghost mesh step size is the mesh
 step size of the largest level along each dimension. In a multi-dimensional case
 the largest level is NOT equal to the depth of the ASG tree.
+
+## Notes
+- This function works only for a trained ASG.
 """
 function get_ghost_stepsize(G::AdaptiveSparseGrid{d})::Vector{Float64} where d
     # get the max levels of each dimension; NOTES: max(level) != ASG tree depth
-    maxlvls = fill(-1, d)
-    for node in keys(G.nv), j in 1:d
-        maxlvls[j] = max(maxlvls[j], node.ls[j])
-    end
-    return Float64[1.0 / power2(l - 1) for l in maxlvls]
+    return Float64[1.0 / power2(l - 1) for l in G.max_levels]
 end # get_nodal_stepsize()
 
 
