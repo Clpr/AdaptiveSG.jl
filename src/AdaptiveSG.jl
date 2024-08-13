@@ -21,7 +21,7 @@ module AdaptiveSG
 
     include("operation/node.jl")          # node & node value operations
     include("operation/stencil.jl")       # stencil arithmetic
-    include("operation/gridstructure.jl") # grid structure modification etc.
+    include("operation/asg.jl")           # ASG grid structure modification etc.
     include("operation/yellowpages.jl")   # yellow pages operations
     include("operation/normalizer.jl")    # normalizer operations
     include("operation/finitediff.jl")    # finite difference stencil operations
