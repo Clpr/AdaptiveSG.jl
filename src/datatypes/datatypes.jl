@@ -1,5 +1,5 @@
 export Node, NodeValue
-export AbstractSparseGrid
+export AbstractSparseGrid, AbstractLinearStencil
 export AdaptiveSparseGrid
 export RegularSparseGrid
 export YellowPages
@@ -15,6 +15,15 @@ An abstract type for sparse grid types. It is used to define the common fields
 and methods for sparse grid types.
 """
 abstract type AbstractSparseGrid{d} <: Any end
+
+
+# ------------------------------------------------------------------------------
+"""
+    AbstractLinearStencil{d} <: Any
+
+An abstract type for linear stencil types.
+"""
+abstract type AbstractLinearStencil{d} <: Any end
 
 
 # ------------------------------------------------------------------------------
