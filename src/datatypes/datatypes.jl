@@ -5,6 +5,7 @@ export RegularSparseGrid
 export YellowPages
 export LinearStencil
 export Normalizer
+export HierarchicalBasisStencil
 
 
 # ------------------------------------------------------------------------------
@@ -281,7 +282,38 @@ struct Normalizer{d}
 end # Normalizer{d}
 
 
+# ------------------------------------------------------------------------------
+"""
+    HierarchicalBasisStencil{d}
 
+A type for a linear nodal hierarchical basis stencil in `d` dimensions. Given an
+sparse grid interpolant `G`, such a stencil represents the following linear
+expression:
+
+`val = stc * H * F + cst`
+
+where `val` is the scalar value of the expression evaluation; `stc` is a sparse
+vector of `length(G)` that stacks the basis function values at each grid node;
+`H` is the hierarchization matrix that maps the nodal coefficients to the hiera-
+rchical coefficients; `F` is the stacking vector of the nodal coefficients; and
+`cst` is a constant value.
+
+## Fields
+- `stc::SparseVector{Float64,Int}`: the sparse vector of the basis function val-
+ues at each grid node
+- `cst::Float64`: the constant value
+- `val::Float64`: the scalar value of the expression evaluation
+
+## Notes
+- This struct supports simple arithmetic (+-*/) with scalar and (+-) with other
+`HierarchicalBasisStencil{d}`. The arithmetic operations are defined elementwise
+- This struct is immutable.
+"""
+struct HierarchicalBasisStencil{d} <: AbstractLinearStencil{d}
+    stc::SparseVector{Float64,Int}
+    cst::Float64
+    val::Float64
+end # HierarchicalBasisStencil{d}
 
 
 
@@ -339,4 +371,8 @@ end
 # ------------------------------------------------------------------------------
 function Base.show(io::IO, n::Normalizer{d}) where d
     print(io, "Normalizer{", d, "}(min = $(n.lb), max = $(n.lb .+ n.gap))")
+end
+# ------------------------------------------------------------------------------
+function Base.show(io::IO, hbs::HierarchicalBasisStencil{d}) where d
+    print(io, "HierarchicalBasisStencil{", d, "}(val = $(hbs.val))")
 end
