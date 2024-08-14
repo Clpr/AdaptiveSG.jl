@@ -29,7 +29,6 @@ function save!(filename::String, G::AdaptiveSparseGrid{d}) where {d}
         HDF5.write(file, "depth", G.depth)
         HDF5.write(file, "max_depth", G.max_depth)
         HDF5.write(file, "rtol", G.rtol)
-        HDF5.write(file, "selfcontained", G.selfcontained)
         HDF5.write(file, "levels", vectorize_levels(G))
         HDF5.write(file, "indices", vectorize_indices(G))
         HDF5.write(file, "nodal", vectorize_nodal(G))

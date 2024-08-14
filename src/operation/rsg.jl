@@ -50,7 +50,6 @@ function convert2asg(
         rtol,
         false
     )
-    G.selfcontained = is_selfcontained(G)
     return G
 end # convert2asg()
 

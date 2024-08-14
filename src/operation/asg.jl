@@ -214,15 +214,12 @@ Append the missing boundary nodes to the adaptive sparse grid `G` and update the
 `selfcontained` field of `G` to `true`. This function is simply a wrapper of the
 workflow: 
 
-`get_missing_boundarynodes()` -> `append!()` -> `G.selfcontained = true`.
-
-"He closes the story book, turns off the light, and say good night."
+`get_missing_boundarynodes()` -> `append!()`.
 """
 function make_selfcontained!(
     G::AdaptiveSparseGrid{d}
 )::Nothing where d
     newnodes = get_missing_boundarynodes(G)
     append!(G, newnodes)
-    G.selfcontained = true
     return nothing
 end # make_selfcontained!()

@@ -46,7 +46,6 @@ end # load!()
     #     selfcontained = HDF5.read(file, "selfcontained") ::Bool
 
     #     G.depth = depth
-    #     G.selfcontained = selfcontained
 
     #     # load levels, indices, nodal, and hierarchical coefficients
     #     lvls = HDF5.read(file, "levels") ::Matrix{Int}

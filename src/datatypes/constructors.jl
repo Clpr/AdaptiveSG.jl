@@ -45,7 +45,6 @@ function AdaptiveSparseGrid{d}(max_depth::Int ; rtol::Float64 = 1e-2) where d
         max_depth,                           # max_depth
         ntuple(i -> -1, d),                  # max_levels
         rtol,                                # rtol
-        false                                # selfcontained
     )
 end
 
@@ -126,7 +125,7 @@ function YellowPages{d}(
     # write the yellow pages
     if neighbortype == :sparse
 
-        if !G.selfcontained
+        if !is_selfcontained(G)
             throw(ArgumentError(
                 "ASG must be self-contained for sparse neighbors"
             ))

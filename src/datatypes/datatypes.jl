@@ -83,10 +83,6 @@ wed to grow beyond this depth
 ich is the threshold for adding a new node. If the training process converges,
 then for all points `x` in the domain, the relative interpolation error is no
 greater than `rtol`. e.g. `rtol=1e-2` means that the error is less than 1%.
-- `selfcontained::Bool`: if `true`, then the grid is self-contained, i.e. every
-node, along every dimension, can find its left and right neighbors. For boundary
-nodes, their neighbors exist along all dimensions except the boundary ones. This
-self-containess property is essential to construct difference operators.
 
 ## Notes
 - f(x): [0,1]^d -> R
@@ -109,7 +105,6 @@ mutable struct AdaptiveSparseGrid{d} <: AbstractSparseGrid{d}
     max_depth    ::Int
     max_levels   ::NTuple{d, Int}
     rtol         ::Float64
-    selfcontained::Bool
 end # AdaptiveSparseGrid{d}
 
 
@@ -307,8 +302,7 @@ function Base.show(io::IO, asg::AdaptiveSparseGrid{d}) where d
         io, 
         "AdaptiveSparseGrid{", d, "}(depth = ", asg.depth, 
         ", #nodes = ", length(asg.nv),
-        ", rtol = ", asg.rtol, 
-        ", selfcontained = ", asg.selfcontained, ")"
+        ", rtol = ", asg.rtol, ")"
     )
 end
 # ------------------------------------------------------------------------------

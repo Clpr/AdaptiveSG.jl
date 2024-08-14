@@ -111,9 +111,6 @@ function update_all!(
     # update the grid depth information
     G.depth = maxdepth
 
-    # check self-containedness and udpate the information
-    G.selfcontained = is_selfcontained(G)
-
     # manually update the node values at depth = 1
     tmpnode = Node{d}(
         ones(Int, d) |> Tuple,
@@ -183,9 +180,6 @@ function update_all!(
     end
     # update the grid depth information
     G.depth = maxdepth
-
-    # check self-containedness and udpate the information
-    G.selfcontained = is_selfcontained(G)
 
     # manually update the node values at depth = 1
     tmpnode = Node{d}(
