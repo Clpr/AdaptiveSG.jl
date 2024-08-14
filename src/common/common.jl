@@ -14,13 +14,20 @@ ive tolerance `rtol`.
 - multi-linear interpolation implies phi = 1 at the grid point, so the nodal coe
 fficient and the hierarchical coefficient is comparable in magnitude, which can
 be conceptually seen as 1 - R^2
-- we specically deal with the case `fx == 0` by using absolute tolerance instead
-- If your function is zero in many places while the tolerance is large (e.g. 1%)
-then this rule will lead to more unnecessary nodes at these places. This may be
-improved in the future.
+- we specically deal with the case `fx ≈ 0` by using absolute tolerance instead.
+The critera of applying the atol is `isapprox(fx, 0.0, atol = 1E-8)`, in which
+`1E-8` is chosen because it is the machine epsilon of `Float32` which is common
+in GPU computing. One implication is that if your function curve/surface/field
+crosses the zero line many times, then it is expected to have more nodes than
+usual. This feature might be useful for some applications (e.g. caring about the
+system's behavior near the equilibrium point) but it may also be a drawback for
+some other applications (e.g. a wave surface that crosses the zero line many ti-
+mes). If you expect it is a drawback for your application, then there are two
+solutions: 1) plus a constant to the function to push it away from zero; 2) Let 
+the training process accept absolute tolerance (planed in the future).
 """
 function isbig2add(α::Float64, fx::Float64, rtol::Float64)::Bool
-    if fx == 0
+    if isapprox(fx, 0.0, atol = 1E-8)
         return abs(α) > rtol
     else
         return (abs(α) / abs(fx)) > rtol
