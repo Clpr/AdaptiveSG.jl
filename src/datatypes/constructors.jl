@@ -255,3 +255,45 @@ Create a `d`-dim normalizer of hypercube `[0,1]^d`.
 function Normalizer{d}() where d
     return Normalizer{d}(ntuple(i -> 0.0, d), ntuple(i -> 1.0, d))
 end # Normalizer{d}
+
+
+# ------------------------------------------------------------------------------
+"""
+    HierarchicalBasisStencil{d}() where d
+
+Create an empty `d`-dim hierarchical basis stencil.
+"""
+function HierarchicalBasisStencil{d}() where d
+    return HierarchicalBasisStencil{d}(
+        sparsevec(Float64[]),
+        NaN,
+        NaN,
+    )
+end # HierarchicalBasisStencil{d}()
+
+
+# ------------------------------------------------------------------------------
+"""
+    HierarchicalBasisStencil{d}(
+        node::Node{d}, 
+        G::AdaptiveSparseGrid{d}
+    ) where d
+
+Create a `d`-dim hierarchical basis stencil with the given `node` and `G` which
+represents the interpolant value at `node`.
+
+## Notes
+- `stc` field of the returned `== get_spvec_node(node, G)`.
+- The constant term `cst` must be 0.
+- The `val` field of the returned `== evaluate(G, node)`.
+"""
+function HierarchicalBasisStencil{d}(
+    node::Node{d}, 
+    G::AdaptiveSparseGrid{d}
+) where d
+    return HierarchicalBasisStencil{d}(
+        get_spvec_node(node, G),
+        0.0,
+        haskey(G.nv, node) ? G.nv[node].f : evaluate(G, node)
+    )
+end # HierarchicalBasisStencil{d}()
