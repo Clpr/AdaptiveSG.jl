@@ -290,13 +290,13 @@ A type for a linear nodal hierarchical basis stencil in `d` dimensions. Given an
 sparse grid interpolant `G`, such a stencil represents the following linear
 expression:
 
-`val = stc * H * F + cst`
+`val = transpose(stc) * H * F + cst`
 
 where `val` is the scalar value of the expression evaluation; `stc` is a sparse
 vector of `length(G)` that stacks the basis function values at each grid node;
 `H` is the hierarchization matrix that maps the nodal coefficients to the hiera-
 rchical coefficients; `F` is the stacking vector of the nodal coefficients; and
-`cst` is a constant value.
+`cst` is a constant value. The `*` is the matrix-vector multiplication.
 
 ## Fields
 - `stc::SparseVector{Float64,Int}`: the sparse vector of the basis function val-
