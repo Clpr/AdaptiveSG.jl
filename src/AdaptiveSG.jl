@@ -20,7 +20,7 @@ module AdaptiveSG
     include("common/phi.jl")       # basis function
 
     include("operation/node.jl")          # node & node value operations
-    include("operation/stencil.jl")       # stencil arithmetic
+    include("operation/linear_stencil.jl")# stencil arithmetic
     include("operation/asg.jl")           # ASG grid structure modification etc.
     include("operation/rsg.jl")           # RSG grid structure modification etc.
     include("operation/yellowpages.jl")   # yellow pages operations
