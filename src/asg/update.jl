@@ -165,14 +165,6 @@ function update_all!(
         throw(ArgumentError("empty grid. Consider train!() instead."))
     end
 
-    # determine true depth of the grid
-    maxdepth = 0
-    for node in keys(G.nv)
-        maxdepth = max(maxdepth, node.depth)
-    end
-    # update the grid depth information
-    G.depth = maxdepth
-
     # manually update the node values at depth = 1
     tmpnode = Node{d}(
         ones(Int, d) |> Tuple,
@@ -182,7 +174,7 @@ function update_all!(
     G.nv[tmpnode] = NodeValue{d}(tmpf, tmpf)
 
     # finally, update the node values (starting from depth 2)
-    for lnow in 2:maxdepth
+    for lnow in 2:G.depth
         if printlevel == "iter"
             println("updating depth = $lnow...")
         end
