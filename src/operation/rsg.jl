@@ -48,7 +48,6 @@ function convert2asg(
         R.max_depth,
         R.max_levels,
         rtol,
-        false
     )
     return G
 end # convert2asg()
