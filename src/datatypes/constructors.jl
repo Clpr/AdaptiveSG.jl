@@ -259,13 +259,15 @@ end # Normalizer{d}
 
 # ------------------------------------------------------------------------------
 """
-    HierarchicalBasisStencil{d}() where d
+    HierarchicalBasisStencil{d}(;n::Int = 0) where d
 
-Create an empty `d`-dim hierarchical basis stencil.
+Create an empty `d`-dim hierarchical basis stencil, where `n` is the number of
+nodes in the `stc` vector. The `stc` is set to be an all-zero sparse vector of
+length `n`; `cst` and `val` are set to be `NaN`.
 """
-function HierarchicalBasisStencil{d}() where d
+function HierarchicalBasisStencil{d}(;n::Int = 0) where d
     return HierarchicalBasisStencil{d}(
-        sparsevec(Float64[]),
+        spzeros(n),
         NaN,
         NaN,
     )
