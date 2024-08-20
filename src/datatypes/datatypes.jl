@@ -255,6 +255,7 @@ the normalization.
 
 ## Fields
 - `lb::NTuple{d, Float64}`: the minimum values of each dimension
+- `ub::NTuple{d, Float64}`: the maximum values of each dimension
 - `gap::NTuple{d, Float64}`: maximum - minimum values of each dimension
 
 ## Notes
@@ -263,6 +264,7 @@ the normalization.
 """
 struct Normalizer{d}
     lb ::NTuple{d, Float64}
+    ub ::NTuple{d, Float64}
     gap::NTuple{d, Float64}
     
     """
@@ -277,7 +279,7 @@ struct Normalizer{d}
         ub::NTuple{d, Float64}
     ) where d
         if any(lb .>= ub); throw(ArgumentError("min >= max found")); end
-        return new{d}(lb, ub .- lb)
+        return new{d}(lb, ub, ub .- lb)
     end
 end # Normalizer{d}
 
