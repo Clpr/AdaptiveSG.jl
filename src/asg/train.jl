@@ -217,13 +217,15 @@ function train!(
         if G.depth < G.max_depth
             println(
                 "Converged at depth ", lnow, " < max depth ", G.max_depth,
-                "; #nodes = ", length(G)
+                "; #nodes = ", length(G), 
+                "; rtol = ", G.rtol,
             )
         else
             println(
                 "Algorithm prematured at depth ", lnow, 
                 " = max depth ", G.max_depth,
-                "; #nodes = ", length(G)
+                "; #nodes = ", length(G),
+                "; rtol = ", G.rtol,
             )
         end 
     end
