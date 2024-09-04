@@ -26,11 +26,22 @@ mes). If you expect it is a drawback for your application, then there are two
 solutions: 1) plus a constant to the function to push it away from zero; 2) Let 
 the training process accept absolute tolerance (planed in the future).
 """
-function isbig2add(α::Float64, fx::Float64, rtol::Float64)::Bool
-    if isapprox(fx, 0.0, atol = 1E-8)
-        return abs(α) > rtol
+function isbig2add(
+    α::Float64, 
+    fx::Float64, 
+    rtol::Float64,
+    atol::Float64,
+    use_rtol::Bool
+)::Bool
+    if use_rtol
+        if isapprox(fx, 0.0, atol = rtol)
+            return abs(α) > rtol
+        else
+            return (abs(α) / abs(fx)) > rtol
+        end
     else
-        return (abs(α) / abs(fx)) > rtol
+        # NOTES: the `atol` is defined in the mean of the residual fit coef
+        return abs(α) > atol
     end
 end # isbig2add()
 

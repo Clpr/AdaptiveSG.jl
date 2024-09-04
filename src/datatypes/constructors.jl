@@ -35,16 +35,25 @@ threshold `rtol` for adding a new node.
 
 After construction, use `train!` to train the grid with a given function.
 """
-function AdaptiveSparseGrid{d}(max_depth::Int ; rtol::Float64 = 1e-2) where d
+function AdaptiveSparseGrid{d}(
+    max_depth::Int ; 
+    rtol::Float64  = NaN,
+    atol::Float64  = NaN,
+    use_rtol::Bool = false,
+) where d
     if d < 1; throw(ArgumentError("d must be >= 1")); end
     if max_depth < 2; throw(ArgumentError("max_depth must be >= 2")); end
-    
+    if use_rtol && isnan(rtol); throw(ArgumentError("rtol needed")); end
+    if (!use_rtol) && isnan(atol); throw(ArgumentError("atol needed")); end
+
     AdaptiveSparseGrid{d}(
         Dictionary{Node{d}, NodeValue{d}}(), # nv
         0,                                   # depth
         max_depth,                           # max_depth
         ntuple(i -> -1, d),                  # max_levels
-        rtol,                                # rtol
+        use_rtol ? rtol : NaN,               # rtol
+        use_rtol ? NaN  : atol,              # atol
+        use_rtol,                            # use_rtol
     )
 end
 

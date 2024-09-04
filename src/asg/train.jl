@@ -161,7 +161,7 @@ function train!(
                     x = get_x(pl)          # x values of the node
                     f = f2fit(x)           # nodal coefficient
                     α = f - evaluate(G, x) # hierarchical coefficient
-                    if isbig2add(α, f, G.rtol)
+                    if isbig2add(α, f, G.rtol, G.atol, G.use_rtol)
                         push!(newnodes[tid], pl => NodeValue{d}(f, α))
                     end
                 end # if
@@ -169,7 +169,7 @@ function train!(
                     x = get_x(pr)
                     f = f2fit(x)
                     α = f - evaluate(G, x)
-                    if isbig2add(α, f, G.rtol)
+                    if isbig2add(α, f, G.rtol, G.atol, G.use_rtol)
                         push!(newnodes[tid], pr => NodeValue{d}(f, α))
                     end
                 end # if

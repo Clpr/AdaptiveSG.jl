@@ -93,6 +93,8 @@ wed to grow beyond this depth
 ich is the threshold for adding a new node. If the training process converges,
 then for all points `x` in the domain, the relative interpolation error is no
 greater than `rtol`. e.g. `rtol=1e-2` means that the error is less than 1%.
+- `atol::Float64`: the absolute tolerance for the hierarchical coefficients, wh-
+ich is the threshold for adding a new node. 
 
 ## Notes
 - f(x): [0,1]^d -> R
@@ -108,6 +110,8 @@ to be sorted by dimension. This tip reminds of using scatter plots.
 - The `max_levels` provides information about the underlying equivalent dense
 grid, or grid refinement, along each dimension. It determines the ghost mesh
 step size in the ghost node method.
+- Either `rtol` or `atol` is NaN if not used. If both are NaN, then the grid is
+invalid.
 """
 mutable struct AdaptiveSparseGrid{d} <: AbstractSparseGrid{d}
     nv           ::Dictionary{Node{d}, NodeValue{d}}
@@ -115,6 +119,8 @@ mutable struct AdaptiveSparseGrid{d} <: AbstractSparseGrid{d}
     max_depth    ::Int
     max_levels   ::NTuple{d, Int}
     rtol         ::Float64
+    atol         ::Float64
+    use_rtol     ::Bool
 end # AdaptiveSparseGrid{d}
 
 
@@ -345,7 +351,9 @@ function Base.show(io::IO, asg::AdaptiveSparseGrid{d}) where d
         io, 
         "AdaptiveSparseGrid{", d, "}(depth = ", asg.depth, 
         ", #nodes = ", length(asg.nv),
-        ", rtol = ", asg.rtol, ")"
+        ", rtol = ", asg.rtol, 
+        ", atol = ", asg.atol, 
+        ", use_rtol = ", asg.use_rtol, ")"
     )
 end
 # ------------------------------------------------------------------------------

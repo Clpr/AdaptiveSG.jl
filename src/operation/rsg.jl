@@ -40,14 +40,18 @@ nodes than `G2`.
 """
 function convert2asg(
     R::RegularSparseGrid{d} ;
-    rtol::Float64 = 1E-2
+    rtol::Float64  = NaN,
+    atol::Float64  = NaN,
+    use_rtol::Bool = false
 )::AdaptiveSparseGrid{d} where d
     G = AdaptiveSparseGrid{d}(
         R.nv |> deepcopy,
         R.max_depth,
         R.max_depth,
         R.max_levels,
-        rtol,
+        use_rtol ? rtol : NaN,
+        use_rtol ? NaN  : atol,
+        use_rtol,
     )
     return G
 end # convert2asg()
