@@ -64,6 +64,12 @@ end # denormalize()
 
 
 # ------------------------------------------------------------------------------
+function denormalize(node::Node{d},nzer::Normalizer{d}) where d
+    return denormalize(node |> get_x, nzer)
+end
+
+
+# ------------------------------------------------------------------------------
 """
     denormalize(x::Float64, nzer::Normalizer{d}, dims::Int)::Float64 where d
 
@@ -79,6 +85,12 @@ cancelled out in the subtraction.
 function denormalize(x::Float64, nzer::Normalizer{d},dims::Int)::Float64 where d
     return x * nzer.gap[dims] + nzer.lb[dims]
 end # denormalize()
+
+
+# ------------------------------------------------------------------------------
+function denormalize(node::Node{d},nzer::Normalizer{d},dims::Int) where d
+    return denormalize(node |> get_x, nzer, dims)
+end
 
 
 # ------------------------------------------------------------------------------
