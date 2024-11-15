@@ -310,13 +310,15 @@ Both structs support regular arithmetic with scalars, and plus/minus with anothe
 - **Question**: Do you have a method to delete specific node(s) from the grid?
     - **Answer**: Officially no. The current implementation emphasizes the reachability of the underlying tree. This property allows us to analytically visit children and parent nodes while free from undefined behaviors. Thus, the training algorithm only adds new nodes but never delete existing nodes. However, if you are 100% sure about what you are doing, then you can always manually `Dictionaries.delete!()` node(s) by manipulating the ordered Dictionary *after* the initial training.
 - **Question**: Training an ASG from zero spends most of the time in trialing nodes that will not be accepted by the algorithm. Anyway to improve this?
-    - **Answer**: Yes. One solution is training an RSG (no cost of trailing nodes) then adapting this RSG one or two steps forward as Schaab & Zhang (2022). I am still working on this and expect a new function `adapt!()` will be delivered in the future. The challenge here is to find a way that maintains some properties of the grid tree during the adaption.
+    - **Answer**: Yes. One solution is training an RSG (no cost of trialing nodes) then adapting this RSG one or two steps forward as Schaab & Zhang (2022). I am still working on this and expect a new function `adapt!()` will be delivered in the future. The challenge here is to find a way that maintains some properties of the grid tree during the adaption.
 - **Question**: Will the package support interpolations other than multi-linear?
     - **Answer**: Maybe. This is an ambitious idea. Theoretically, ASG can work with arbitrary interpolation methods. However, the current design is heavily based on some mathematical conclusions of multi-linear interpolation. I need to find an uniform framework that accommodates arbitrary degree of piecewise polynomial interpolations
 - **Question**: Is multi-linear ASG a monotonic interpolation?
     - **Answer**: Yes. Exactly the same as standard multi-linear interpolation, multi-linear ASG does not overshoot.
 - **Question**: When I try solving HJB equations or other PDEs with your package, the finite difference method fails. Why?
     - **Answer**: When solving PDEs with finite difference and approximating the unknown function with an interpolant, the interpolation methods must satisfy specific conditions to keep the monotonicity of the scheme. Check my [blog post](https://clpr.github.io/blogs/post_241111.html) for a discussion about this issue.
+- **Question**: Do you have a plan to support numerical quadrature for ASG?
+    - **Answer**: Of course. This is on my schedule and has high priority. Numerical quadrature is essential, and it is useful in e.g. aggregation of heterogneous agent models.
 
 ## License
 
