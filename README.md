@@ -188,7 +188,7 @@ begin
     
     # evalute the new function
     for node in keys(nv2)
-		# node -> scalar x value (vector)
+        # node -> scalar x value (vector)
         Xvec = asg.get_x(node)
         
         nv2[node] = 1.14514 + sum(Xvec .^ 1.5)
