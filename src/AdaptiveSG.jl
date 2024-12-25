@@ -26,7 +26,7 @@ module AdaptiveSG
     include("operation/rsg.jl")           # RSG grid structure modification etc.
     include("operation/yellowpages.jl")   # yellow pages operations
     include("operation/normalizer.jl")    # normalizer operations
-    include("operation/finitediff.jl")    # finite difference stencil operations
+    include("operation/stdinterp.jl")     # API for standard interpolation lang
 
     include("datatypes/constructors.jl") # (using some operations defined above)
 

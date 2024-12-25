@@ -91,26 +91,6 @@ end # vectorize_hierarchical()
 
 # ------------------------------------------------------------------------------
 """
-    interpcoef(G::AbstractSparseGrid{d})::Vector{Float64} where d
-
-Get the interpolation coefficient vector, equivalent to the hierarchical coeffi-
-cient vector, of the sparse grid `G`. Returns a vector of length `length(G)`.
-
-This method is wrapped for users who are familiar to or work in the context of
-typical interplation in mathematics, where the interpolation coefficient is the
-quantity of interest. The method is equivalent to `vectorize_hierarchical`.
-
-To get the basis matrix at nodes, check `basis_matrix()` method which equivalent
-to `get_dehierarchization_matrix()`; to evaluate the basis matrix at arbitrary 
-point(s), check `basis_matrix()` method as well.
-"""
-function interpcoef(G::AbstractSparseGrid{d})::Vector{Float64} where {d}
-    return vectorize_hierarchical(G)
-end
-
-
-# ------------------------------------------------------------------------------
-"""
     vectorize_x(G::AbstractSparseGrid{d})::Matrix{Float64} where d
 
 Vectorize the coordinate values of the nodes in the sparse grid `G`. The result 
