@@ -4,7 +4,7 @@ module AdaptiveSG
     using LinearAlgebra, SparseArrays
     using StaticArrays
     using Dictionaries
-    import HDF5
+    # import HDF5  // I/O in dev, remove for release
     
     export Dictionary
     export SparseMatrixCSC, SparseVector
