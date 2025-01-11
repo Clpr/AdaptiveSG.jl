@@ -128,3 +128,32 @@ function denormalize_dist_along(
 )::Float64 where d
     return dist_normalized * nzer.gap[dims]
 end # denormalize_dist_along()
+
+
+
+
+
+
+# ------------------------------------------------------------------------------
+"""
+    normalize(f2fit::Function, nzer::Normalizer{d})::Function where d
+
+Decorates a function `f2fit` that takes a single vector argument of type
+`AbstractVector{Float64}` in a `d`-dim hyper-rectangle space to a function that
+takes a single vector argument of type `SVector{d,Float64}` in the hypercube
+`[0,1]^d` space.
+
+## Arguments
+- `f2fit::Function`: The function to be decorated.
+- `nzer::Normalizer{d}`: The normalizer object that defines the original domain
+as a hyper-rectangle.
+
+## Returns
+- A decorated function that takes a single vector argument of type 
+`SVector{d,Float64}` in the hypercube `[0,1]^d` space.
+"""
+function normalize(f2fit::Function, nzer::Normalizer{d})::Function where d
+    return X01 -> f2fit(denormalize(X01, nzer))
+end
+
+
