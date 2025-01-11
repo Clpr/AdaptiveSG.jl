@@ -79,6 +79,28 @@ function evaluate(
     )
 end # evaluate()
 
+
+# ------------------------------------------------------------------------------
+"""
+Evaluates the ASG/RSG interpolant at a point `x` from a hyper-rectangle defined
+by `nzer`. This function is a wrapper around `evaluate()` and `normalize()`.
+"""
+function evaluate(
+    G::AbstractSparseGrid{d},
+    x::T,
+    nzer::Normalizer{d} ;
+    untildepth::Int = 0,
+    validonly::Bool = false
+)::Float64 where {d, T<:AbstractVector{Float64}}
+    x01 = normalize(x, nzer)
+    return evaluate(
+        G, x01,
+        untildepth = untildepth,
+        validonly = validonly
+    )
+end # evaluate()
+
+
 # ------------------------------------------------------------------------------
 function _private_evaluate_allnodes_alldepth(
     G::AbstractSparseGrid{d},
