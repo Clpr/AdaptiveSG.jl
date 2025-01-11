@@ -191,4 +191,16 @@ function spunitvec(d::Int, j::Int)::SparseVector{Float64, Int}
 end # spunitvec()
 
 
+# ------------------------------------------------------------------------------
+"""
+    perturb(x::AbstractVector, j::Int, vnew::Real)::AbstractVector
 
+Return a new vector `x2` by perturbing the `j`-th element of the input vector 
+`x` with the new value `vnew`. The function does not modify the input vector `x`
+but require the type of `x` to be mutable.
+"""
+function perturb(x::AbstractVector, j::Int, vnew::Real)::AbstractVector
+    x2 = copy(x)
+    x2[j] = vnew
+    return x2
+end # perturb()
