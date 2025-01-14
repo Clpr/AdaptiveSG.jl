@@ -30,7 +30,7 @@ end
 """
     basis_matrix(
         x::AbstractVector,
-        G::AdaptiveSparseGrid{d} ;
+        G::AbstractSparseGrid{d} ;
         dropzeros::Bool = true,
         atol::Float64  = 1e-16
     )::SparseVector{Float64,Int} where d
@@ -42,7 +42,7 @@ this method.
 """
 function basis_matrix(
     x::AbstractVector,
-    G::AdaptiveSparseGrid{d} ;
+    G::AbstractSparseGrid{d} ;
     dropzeros::Bool = true,
     atol::Float64  = 1e-16
 )::SparseVector{Float64,Int} where d
@@ -61,7 +61,7 @@ end # basis_matrix()
 """
     basis_matrix(
         p::Node{d},
-        G::AdaptiveSparseGrid{d} ;
+        G::AbstractSparseGrid{d} ;
         dropzeros::Bool = true,
         atol::Float64  = 1e-16
     )::SparseVector{Float64,Int} where d
@@ -70,7 +70,7 @@ Alias for `basis_matrix(get_x(p), G)`.
 """
 function basis_matrix(
     p::Node{d}, 
-    G::AdaptiveSparseGrid{d} ; 
+    G::AbstractSparseGrid{d} ; 
     dropzeros::Bool = true, 
     atol::Float64 = 1e-16
 )::SparseVector{Float64,Int} where d
@@ -83,7 +83,7 @@ end # basis_matrix()
 """
     basis_matrix(
         X::AbstractMatrix,
-        G::AdaptiveSparseGrid{d} ;
+        G::AbstractSparseGrid{d} ;
         dropzeros::Bool = true,
         atol::Float64  = 1e-16
     )::SparseMatrixCSC{Float64,Int} where d
@@ -106,7 +106,7 @@ to the basis vector at the corresponding point in `X`.
 """
 function basis_matrix(
     X::AbstractMatrix,
-    G::AdaptiveSparseGrid{d} ;
+    G::AbstractSparseGrid{d} ;
     dropzeros::Bool = true,
     atol::Float64  = 1e-16
 )::SparseMatrixCSC{Float64,Int} where d
@@ -127,7 +127,7 @@ end # basis_matrix()
 # ------------------------------------------------------------------------------
 """
     basis_matrix(
-        G::AdaptiveSparseGrid{d} ;
+        G::AbstractSparseGrid{d} ;
         dropzeros::Bool = true,
         atol::Float64  = 1e-16
     )::SparseMatrixCSC{Float64,Int} where d
@@ -140,7 +140,7 @@ Alias for `basis_matrix(vectorize_x(G), G)`;
 also alias for `get_hierarchization_matrix()`.
 """
 function basis_matrix(
-    G::AdaptiveSparseGrid{d} ;
+    G::AbstractSparseGrid{d} ;
     dropzeros::Bool = true,
     atol::Float64  = 1e-16
 ) where d
