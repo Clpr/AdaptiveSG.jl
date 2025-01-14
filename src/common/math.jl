@@ -1,4 +1,4 @@
-export power2, invpower2, odduntil, nodedepth
+export power2, invpower2, odduntil, nodedepth, perturb
 
 # ------------------------------------------------------------------------------
 """
