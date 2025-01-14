@@ -51,3 +51,6 @@ AdaptiveSG/
 
 # macos files
 .DS_Store
+
+# profiling files
+*.pb.gz
