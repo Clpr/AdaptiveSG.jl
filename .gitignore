@@ -30,6 +30,7 @@ Manifest.toml
 # sandbox dir
 sandbox/
 docs/archive/
+temp/
 
 # non-essential files
 *.pdf
