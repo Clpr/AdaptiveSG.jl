@@ -150,10 +150,14 @@ as a hyper-rectangle.
 
 ## Returns
 - A decorated function that takes a single vector argument of type 
-`SVector{d,Float64}` in the hypercube `[0,1]^d` space.
+`SVector{d,Float64}` in the hypercube `[0,1]^d` space, and the output is forced
+to be a `Float64` type.
 """
 function normalize(f2fit::Function, nzer::Normalizer{d})::Function where d
-    return X01 -> f2fit(denormalize(X01, nzer))
+    function _decorated(X01::SVector{d,Float64})::Float64
+        return f2fit(denormalize(X01, nzer))
+    end
+    return _decorated
 end
 
 
