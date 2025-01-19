@@ -69,14 +69,16 @@ function validate_f2fit!(f2fit::Function, d::Int)::Nothing
     if !hasmethod(f2fit, Tuple{SVector{d,Float64}})
         throw(ArgumentError(string(
             "f2fit must have a method that is able to receive only ",
-            "one single SVector{d,Float64} position argument."
+            "one single SVector{d,Float64} position argument.",
+            "You may consider to use `normalize` to align the input function."
         )))
     end
     # output
     _rettype = Base.return_types(f2fit, Tuple{SVector{d,Float64}})
     if (length(_rettype) != 1) | (_rettype[1] != Float64)
         throw(ArgumentError(string(
-            "f2fit must return a single Float64 value but got $(_rettype)"
+            "f2fit must return a single Float64 value but got $(_rettype).",
+            "You may consider to use `normalize` to align the output function."
         )))
     end
     return nothing
