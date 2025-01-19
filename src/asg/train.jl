@@ -6,7 +6,8 @@ export train!
     train!(
         G::AdaptiveSparseGrid{d}, 
         f2fit::Function ;
-        printlevel::String = "iter"
+        printlevel::String = "iter",
+        validate_io::Bool = true
     ) where d
 
 Train the adaptive sparse grid `G` by adding new nodes based on the function 
@@ -18,6 +19,10 @@ Train the adaptive sparse grid `G` by adding new nodes based on the function
 while being able to accept a `SVector{d, Float64}` as the only position argument
 check `isvalid_f2fit()` for more details
 - `printlevel::String`: print level, either "iter", "final", or "none"
+- `validate_io::Bool`: if to validate the input and output types of `f2fit`. If
+true, then it ensures extra type stability at the cost of manual management of
+the function type.
+
 
 ## Notes
 - The training proecss is initialized by adding all depth 1, 2 nodes. The max
@@ -28,11 +33,12 @@ such as `f2fit(x::AbstractVector{Float64})` or `f2fit(x)` without type assertion
 function train!(
     G::AdaptiveSparseGrid{d}, 
     f2fit::Function ;
-    printlevel::String = "iter"
+    printlevel::String = "iter",
+    validate_io::Bool = true
 ) where d
 
     # check the function-to-fit's input and output types
-    validate_f2fit!(f2fit, d)
+    validate_io && validate_f2fit!(f2fit, d)
 
     # if the grid is already initialized, then the current algorithm does not
     # clear and re-initialize the grid to avoid potential data loss.
@@ -242,7 +248,8 @@ end # train!
     train!(
         G::RegularSparseGrid{d}, 
         f2fit::Function ;
-        printlevel::String = "iter"
+        printlevel::String = "iter",
+        validate_io::Bool = true
     ) where d
 
 Train the regular sparse grid `G` by doing residual fitting on the function
@@ -258,13 +265,14 @@ can be done to a trained RSG for multiple times.
 function train!(
     G::RegularSparseGrid{d}, 
     f2fit::Function ;
-    printlevel::String = "iter"
+    printlevel::String = "iter",
+    validate_io::Bool = true
 ) where d
     
     # use the same idea as the `update_all!()` of the ASG: taking the grid
     # structure as given, only update node values.
 
-    validate_f2fit!(f2fit, d)
+    validate_io && validate_f2fit!(f2fit, d)
     if length(G) == 0
         throw(ArgumentError("empty grid. RSG not correctly constructed."))
     end

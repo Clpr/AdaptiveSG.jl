@@ -43,7 +43,11 @@ end # update!()
 
 # ------------------------------------------------------------------------------
 """
-    update!(G::AdaptiveSparseGrid{d}) where d
+    update!(
+        G::AdaptiveSparseGrid{d}, 
+        f2fit::Function ;
+        validate_io::Bool = true
+    ) where d
 
 Update the adaptive sparse grid `G` by doing residual fitting for the nodes with
 NaN coefficients. This function is often used after adding new nodes to the grid
@@ -58,8 +62,12 @@ recommended in most cases.
 very small hierarchical coefficients within the tolerance `G.rtol`. However, the
 function is usually essential for the self-containedness.
 """
-function update!(G::AdaptiveSparseGrid{d}, f2fit::Function) where d
-    validate_f2fit!(f2fit, d)
+function update!(
+    G::AdaptiveSparseGrid{d}, 
+    f2fit::Function ;
+    validate_io::Bool = true
+) where d
+    validate_io && validate_f2fit!(f2fit, d)
     for (node, nval) in pairs(G.nv)
         if !isvalid(nval)
             x = get_x(node)
@@ -81,7 +89,8 @@ end # update!()
     update_all!(
         G::AdaptiveSparseGrid{d}, 
         f2fit::Function ; 
-        printlevel::String = "iter"
+        printlevel::String = "iter",
+        validate_io::Bool = true
     ) where d
 
 Update the entire adaptive sparse grid `G` while keeping the current grid 
@@ -96,9 +105,10 @@ and there is no need to try potential children nodes as the `train!()` function.
 function update_all!(
     G::AdaptiveSparseGrid{d},
     f2fit::Function ;
-    printlevel::String = "iter"
+    printlevel::String = "iter",
+    validate_io::Bool = true
 ) where d
-    validate_f2fit!(f2fit, d)
+    validate_io && validate_f2fit!(f2fit, d)
     if length(G) == 0
         throw(ArgumentError("empty grid. Consider train!() instead."))
     end
