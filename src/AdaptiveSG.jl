@@ -17,9 +17,9 @@ module AdaptiveSG
     include("common/phi.jl")       # basis function
 
     include("operation/node.jl")          # node & node value operations
+    include("operation/normalizer.jl")    # normalizer operations
     include("operation/asg.jl")           # ASG grid structure modification etc.
     include("operation/rsg.jl")           # RSG grid structure modification etc.
-    include("operation/normalizer.jl")    # normalizer operations
     include("operation/stdinterp.jl")     # API for standard interpolation lang
 
     include("datatypes/constructors.jl") # (using some operations defined above)

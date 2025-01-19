@@ -73,6 +73,45 @@ end # NodeValue{d}
 
 # ------------------------------------------------------------------------------
 """
+    Normalizer{d}
+
+A generic `d`-dim normalizer type to save the min and max values of each dimens-
+ion. It is used to normalize the input data to the domain `[0,1]^d` and reverse
+the normalization.
+
+## Fields
+- `lb::NTuple{d, Float64}`: the minimum values of each dimension
+- `ub::NTuple{d, Float64}`: the maximum values of each dimension
+- `gap::NTuple{d, Float64}`: maximum - minimum values of each dimension
+
+## Notes
+- Default constructor: `Normalizer{d}(lb, ub)`
+- This struct is immutable and passed by values.
+"""
+struct Normalizer{d}
+    lb ::NTuple{d, Float64}
+    ub ::NTuple{d, Float64}
+    gap::NTuple{d, Float64}
+    
+    """
+        Normalizer{d}(lb::NTuple{d, Float64}, ub::NTuple{d, Float64})
+
+    Create a `d`-dim normalizer with the given min and max values of each dimen-
+    sion. The min values must be less than the max values. Otherwise, an error
+    will be thrown.
+    """
+    function Normalizer{d}(
+        lb::NTuple{d, Float64}, 
+        ub::NTuple{d, Float64}
+    ) where d
+        if any(lb .>= ub); throw(ArgumentError("min >= max found")); end
+        return new{d}(lb, ub, ub .- lb)
+    end
+end # Normalizer{d}
+
+
+# ------------------------------------------------------------------------------
+"""
     AdaptiveSparseGrid{d}
 
 A generic `d`-dim adaptive sparse grid type. It, conceptually modeled as a 2d-tr
@@ -147,43 +186,7 @@ mutable struct RegularSparseGrid{d} <: AbstractSparseGrid{d}
 end
 
 
-# ------------------------------------------------------------------------------
-"""
-    Normalizer{d}
 
-A generic `d`-dim normalizer type to save the min and max values of each dimens-
-ion. It is used to normalize the input data to the domain `[0,1]^d` and reverse
-the normalization.
-
-## Fields
-- `lb::NTuple{d, Float64}`: the minimum values of each dimension
-- `ub::NTuple{d, Float64}`: the maximum values of each dimension
-- `gap::NTuple{d, Float64}`: maximum - minimum values of each dimension
-
-## Notes
-- Default constructor: `Normalizer{d}(lb, ub)`
-- This struct is immutable and passed by values.
-"""
-struct Normalizer{d}
-    lb ::NTuple{d, Float64}
-    ub ::NTuple{d, Float64}
-    gap::NTuple{d, Float64}
-    
-    """
-        Normalizer{d}(lb::NTuple{d, Float64}, ub::NTuple{d, Float64})
-
-    Create a `d`-dim normalizer with the given min and max values of each dimen-
-    sion. The min values must be less than the max values. Otherwise, an error
-    will be thrown.
-    """
-    function Normalizer{d}(
-        lb::NTuple{d, Float64}, 
-        ub::NTuple{d, Float64}
-    ) where d
-        if any(lb .>= ub); throw(ArgumentError("min >= max found")); end
-        return new{d}(lb, ub, ub .- lb)
-    end
-end # Normalizer{d}
 
 
 
@@ -201,6 +204,10 @@ end
 # ------------------------------------------------------------------------------
 function Base.show(io::IO, nv::NodeValue{d}) where d
     print(io, "NodeValue{", d, "}(nodal = $(nv.f), hierarchical = $(nv.α))")
+end
+# ------------------------------------------------------------------------------
+function Base.show(io::IO, n::Normalizer{d}) where d
+    print(io, "Normalizer{", d, "}(min = $(n.lb), max = $(n.lb .+ n.gap))")
 end
 # ------------------------------------------------------------------------------
 function Base.show(io::IO, asg::AdaptiveSparseGrid{d}) where d
@@ -222,8 +229,4 @@ function Base.show(io::IO, rsg::RegularSparseGrid{d}) where d
         "#nodes = ", length(rsg.nv), ", ",
         "max_levels = ", rsg.max_levels, ")"
     )
-end
-# ------------------------------------------------------------------------------
-function Base.show(io::IO, n::Normalizer{d}) where d
-    print(io, "Normalizer{", d, "}(min = $(n.lb), max = $(n.lb .+ n.gap))")
 end

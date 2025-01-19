@@ -28,6 +28,17 @@ end
 
 # ------------------------------------------------------------------------------
 """
+    Normalizer{d}()
+
+Create a `d`-dim normalizer of hypercube `[0,1]^d`.
+"""
+function Normalizer{d}() where d
+    return Normalizer{d}(ntuple(i -> 0.0, d), ntuple(i -> 1.0, d))
+end # Normalizer{d}
+
+
+# ------------------------------------------------------------------------------
+"""
     AdaptiveSparseGrid{d}(max_depth::Int ; rtol::Float64 = 1e-2) where d
 
 Create an empty `d`-dim adaptive sparse grid with the given `max_depth` and the
@@ -99,14 +110,3 @@ function RegularSparseGrid{d}(max_depth::Int, max_levels::NTuple{d,Int}) where d
         max_depth,
     )
 end # RegularSparseGrid{d}
-
-
-# ------------------------------------------------------------------------------
-"""
-    Normalizer{d}()
-
-Create a `d`-dim normalizer of hypercube `[0,1]^d`.
-"""
-function Normalizer{d}() where d
-    return Normalizer{d}(ntuple(i -> 0.0, d), ntuple(i -> 1.0, d))
-end # Normalizer{d}
