@@ -208,7 +208,40 @@ function update_all!(
 end # update_all!()
 
 
+# ------------------------------------------------------------------------------
+function update_all!(
+    G::RegularSparseGrid{d},
+    fnew::Dictionary{Node{d}, Float64} ;
+    printlevel::String = "iter"
+) where d
+    # manually update the node values at depth = 1
+    tmpnode = Node{d}(
+        ones(Int, d) |> Tuple,
+        ones(Int, d) |> Tuple,
+    )
+    tmpf = fnew[tmpnode]
+    G.nv[tmpnode] = NodeValue{d}(tmpf, tmpf)
 
-
-
-
+    # finally, update the node values, starting from depth = 2
+    for lnow in 2:G.max_depth
+        if printlevel == "iter"
+            println("updating depth = $lnow...")
+        end
+        for node in keys(G.nv)
+            if node.depth == lnow
+                x = get_x(node)
+                f = fnew[node]
+                α = f - evaluate(
+                    G, x,
+                    untildepth = node.depth - 1,
+                    validonly  = true
+                )
+                G.nv[node] = NodeValue{d}(f, α)
+            end # if
+        end # node
+    end # lnow, (node, nval)
+    if (printlevel == "iter") || (printlevel == "final")
+        println("The RSG is trained.")
+    end 
+    return nothing
+end # update_all!()
