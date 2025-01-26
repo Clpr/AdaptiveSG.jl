@@ -154,10 +154,10 @@ as a hyper-rectangle.
 to be a `Float64` type.
 """
 function normalize(f2fit::Function, nzer::Normalizer{d})::Function where d
-    function _decorated(X01::SVector{d,Float64})::Float64
-        return f2fit(denormalize(X01, nzer))
-    end
-    return _decorated
+    # function _decorated(X01::SVector{d,Float64})::Float64
+    #     return f2fit(denormalize(X01, nzer))
+    # end
+    return X01::SVector{d,Float64} -> Float64(f2fit(denormalize(X01, nzer)))
 end
 
 
