@@ -207,7 +207,12 @@ function Base.show(io::IO, nv::NodeValue{d}) where d
 end
 # ------------------------------------------------------------------------------
 function Base.show(io::IO, n::Normalizer{d}) where d
-    print(io, "Normalizer{", d, "}(min = $(n.lb), max = $(n.lb .+ n.gap))")
+    println(io, "Normalizer{", d, "}")
+    for i in 1:d
+        _lb = round(n.lb[i], digits=4)
+        _ub = round(n.ub[i], digits=4)
+        println(io, "\tx[$i] in [$_lb, $_ub]")
+    end
 end
 # ------------------------------------------------------------------------------
 function Base.show(io::IO, asg::AdaptiveSparseGrid{d}) where d
