@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="description" content="None" />
+      <link rel="shortcut icon" href="img/favicon.ico" />
+    <title>AdaptiveSG.jl</title>
+    <link rel="stylesheet" href="css/theme.css" />
+    <link rel="stylesheet" href="css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Home";
+        var mkdocs_page_input_path = "index.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/julia.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="." class="icon icon-home"> AdaptiveSG.jl
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">Home</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#problem-setup">Problem setup</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#quick-start">Quick start</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#fitting-evaluation-in-01d">Fitting &amp; evaluation in [0,1]^d</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#hyper-rectangle-domain">Hyper-rectangle domain</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#basis-matrix-coefficients-and-stacking">Basis matrix, coefficients and stacking</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#regular-sparse-grid-rsg">Regular sparse grid (RSG)</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#reference">Reference</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#license">License</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="math/">Math and programming abstraction</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="lower_level_control/">Lower level API</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="examples/">Examples</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="issues/">Limitations and discussion</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href=".">AdaptiveSG.jl</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Home</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="adaptivesgjl">AdaptiveSG.jl</h1>
+<p>This package implements multi-dimensional piecewise linear (aka multi-linear) interpolation of adaptive sparse grid (ASG).</p>
+<p><a href="https://github.com/Clpr/AdaptiveSG.jl">(Go to the project page)</a></p>
+<h2 id="installation">Installation</h2>
+<p>This package has not been registered in the general registry.
+To import it as a module, run: <code>include("PROJECT_PATH/src/AdaptiveSG.jl")</code>;
+To install it as a private package, run: <code>add "PROJECT_PATH/src/AdaptiveSG.jl"</code> in the Pkg mode.
+In the future, one should use <code>add AdaptiveSG</code> in the Pkg mode.</p>
+<h2 id="problem-setup">Problem setup</h2>
+<p>Consider a <script type="math/tex">d</script>-dimensional real function <script type="math/tex">f(x):[0,1]^d\to\mathbb{R}</script>.
+A generic interpolation function (<em>interpolant</em>) is defined as the following linear function:</p>
+<p>
+<script type="math/tex; mode=display">
+\hat{f} (x) := \sum_{i=1}^N \varphi_i(x) \cdot \theta_i
+</script>
+where <script type="math/tex">N</script> is the number of <em>supporting nodes</em>; <script type="math/tex">\varphi_i : [0,1]^{d}\to\mathbb{R}^{1\times N-1}</script> is the <em>basis vector</em>; <script type="math/tex">\theta_i</script> is the <em>interpolation coefficient</em>.
+The degree of the interpolation is <script type="math/tex">N-1</script>.
+An interpolant should approximate the original <script type="math/tex">f(x)</script> within a given error tolerance <script type="math/tex">\varepsilon</script>.
+To interpolate a function mapping from a hyper-rectangle domain <script type="math/tex"> \otimes_{j=1}^d [\underline{x}_j,\bar{x}_j] </script>, the normalization is required.</p>
+<p>A multi-linear ASG interpolant falls into this generic framework. It is almost the same as a conventional multi-linear interpolation but:</p>
+<ul>
+<li>Using a hierarchy of nodes and coefficients, and residual fitting to effectively reduce the required number of nodes. (sparsity)</li>
+<li>Wisely choosing which nodes to add in the training process (adaption)</li>
+</ul>
+<h2 id="quick-start">Quick start</h2>
+<p>The package follows a pipeline:</p>
+<ol>
+<li><code>AdaptiveSparseGrid{d}</code>: Creating an instance of a multi-linear ASG interpolant of dimensionality <script type="math/tex">d</script>. The interpolation tolerance type and value are specified.</li>
+<li><code>train!</code>: Training an instance by providing <script type="math/tex">f(x)</script>.</li>
+<li><code>update!</code> and <code>update_all!</code>: In case of manually changing node(s), update the interpolation.</li>
+<li><code>evaluate</code>: Evaluate the interpolant at given points.</li>
+<li><code>integrate</code>: Integrate the interpolant along specific dimension(s).</li>
+</ol>
+<h3 id="fitting-evaluation-in-01d">Fitting &amp; evaluation in <script type="math/tex">[0,1]^d</script>
+</h3>
+<p>Suppose we are going to fit the following function in a hypercube.</p>
+<p>
+<script type="math/tex; mode=display">
+f(x_1,x_2) := \sin(4x_1) + \cos(4x_2), (x_1,x_2) \in [0,1]^2
+</script>
+</p>
+<p>To do this, we firstly create an instance of ASG interpolant and specify the tolerance:</p>
+<pre><code class="language-julia">import AdaptiveSG as asg
+
+# absolute tolerance by default
+G = asg.AdaptiveSparseGrid{2}(20, atol = 1E-3)
+
+# relative tolerance
+G = asg.AdaptiveSparseGrid{2}(20, rtol = 1E-3, use_rtol = true)
+</code></pre>
+<p>where the parametric parameter 2 indicates the dimensinoality.
+The constructor accepts one position argument <code>max_depth</code> which specifies the
+maximum depth of the node lattice, which represents the level of interpolation accuracy.
+Here we set a numebr of 20 which is supposed to be enough for the algorithm to converge.
+In the mathematical section, we talk more about the idea of node lattice, which can also be a tree conceptually with extra restrictions.</p>
+<p>The constructor creates an empty instance without nodes. To fit <script type="math/tex">f(x_1,x_2)</script>, we use <code>train!</code> function:</p>
+<pre><code class="language-julia">asg.train!(G, X -&gt; sin(X[1]*4) + cos(X[2]*4), printlevel = &quot;iter&quot;)
+</code></pre>
+<p>The <code>train!</code> function requires a function that receives a <script type="math/tex">d</script>-vector (here <script type="math/tex">d=2</script>) and returns a float number.
+The keyword argument <code>printlevel</code> can be <code>iter</code>, <code>final</code> or <code>none</code>, which specifies at which level the information to print.</p>
+<p>The training algorithm automatically test and decide which nodes to be added to the grid structure.
+It ends when:</p>
+<ul>
+<li>Either adding a new node cannot improve the fitting given the tolerance type and value (converged)</li>
+<li>Or the node lattice has grown to the <code>max_depth</code> (pre-matured)</li>
+</ul>
+<p>The choice of <code>max_depth</code> should trade off between: large enough to obtain a reasonable accuracy; small enough to avoid forever running. In many applications, it is expensive to evaluate the target function so one should be careful about the value of <code>max_depth</code>.</p>
+<p>When an ASG interpolant is trained, it cannot be re-trained to fit another function because its grid structure is specialized for the current function. One should create another instance for another function. If there does exist a demand for reusing the same instance, please check the lower level operation guide.</p>
+<p>After successfully training the ASG interpolant, one can evaluate its value at an arbitrary point in <script type="math/tex">[0,1]^2</script>:</p>
+<pre><code class="language-julia">yfit::Float64 = asg.evaluate(G, rand(2))
+</code></pre>
+<p>A callable wrapper could be helpful in some scenarios. It can be created by:</p>
+<pre><code class="language-julia">ffit(x1,x2) = asg.evaluate(G, [x1,x2])
+
+# at 1 point
+ffit(0.114514,0.1919810)
+
+# at multiple points
+xtest = rand(10,2)
+ffit.(xtest[:,1], xtest[:,2])
+</code></pre>
+<p>Due to the theoretical property of node hierachy, the ASG interpolant does not
+support extrapolation. Any point outside the <script type="math/tex">d</script>-hypercube will return a float zero.</p>
+<p>On the current stage, the package supports integrating along one single dimension by providing at which point to do the integration:</p>
+<pre><code class="language-julia">xref = [0.5,0.5]
+
+# Fixing x2 = 0.5, integrate along the 1st dimension
+asg.integrate(G, xref, 1, xlim = (0.0, 1.0), nsamples = 10)
+
+# weighted integration
+asg.integrate(G, xref, 1, xlim = (0.0, 1.0), nsamples = 10, weight = rand(10))
+</code></pre>
+<p>where we provide a reference point <code>[0.5,0.5]</code>. The dimension to integrate of the reference point is ignored but we still need to specify a value there.
+The keyword argument <code>weight</code> is useful in some applications (e.g. taking expectation),
+while one needs to be careful that the provided <code>weight</code> is not normalized to sum-to-1.</p>
+<h3 id="hyper-rectangle-domain">Hyper-rectangle domain</h3>
+<p>The vanila formula works with hyper cube <script type="math/tex">[0,1]^d</script> domain to obtain the best performance.
+However, in most cases, we work with a function that maps from a hyper rectangle domain <script type="math/tex"> \mathcal{X} := \otimes_{j=1}^d [\underline{x}_j,\bar{x}_j] </script> where all lower and upper bounds are bounded.
+Intuitively, a normalization or scaling is needed.
+In this package, we specify the domain using data structure <code>Normalizer{d}</code>.</p>
+<pre><code class="language-julia"># specify domain: [0,1]^2 (default)
+nzer = asg.Normalizer{2}()
+
+# specify domain: Xrect := [-1,2] * [3,7]
+nzer = asg.Normalizer{2}((-1.0, 3.0), (2.0, 7.0))
+</code></pre>
+<p>A normalizer can be used to affine an <script type="math/tex">d</script>-dimensional point between the hypercube <script type="math/tex">[0,1]^d</script>
+and the hyper-rectangle <script type="math/tex">\mathcal{X}</script>:</p>
+<pre><code class="language-julia"># Xrect -&gt; [0,1]^2
+asg.normalize([1.0, 4.5], nzer)
+
+# [0,1]^2 -&gt; Xrect
+asg.denormalize([0.5, 0.5], nzer)
+
+# Xrect -&gt; [0,1]^2, but only the 2nd dimension
+asg.normalize(4.5, nzer, 2)
+
+# [0,1]^2 -&gt; Xrect, but only the 1st dimension
+asg.denormalize(0.5, nzer, 1)
+</code></pre>
+<p>Now, to train the function in an alternaitve domain <script type="math/tex">\mathcal{X}</script>,
+one needs to explicitly normalize the target function before feeding it to <code>train!</code>. For example,</p>
+<pre><code class="language-julia">train!(
+    G,
+    X01 -&gt; begin
+        X = asg.denormalize(X01, nzer)
+        sin(X[1]*4) + cos(X[2]*4)
+    end
+)
+</code></pre>
+<p>The other style, which is preferred by the authors, is defining the target function separately but only normalize it when passing it to <code>train!</code>:</p>
+<pre><code class="language-julia">f2fit(X) = sin(X[1]*4) + cos(X[2]*4)
+
+train!(G, X01 -&gt; f2fit(asg.normalize(X, nzer)))
+</code></pre>
+<p>This works better especially if each element of <code>X</code> has physical interpretations.</p>
+<p>To evaluate the trained ASG interplant in the new domain of hyper rectangle <script type="math/tex">\mathcal{X}</script>,
+one can either:</p>
+<pre><code class="language-julia"># directly pass a point in the normalized [0,1]^2 space as the vanilla formula
+asg.evalaute(G, [0.5,0.5])
+</code></pre>
+<p>Or, passing the point in the original space but with a normalizer:</p>
+<pre><code class="language-julia">asg.evaluate(G, [1.0, 4.5], nzer)
+</code></pre>
+<p>Of course, one can always do the denormalization explicitly:</p>
+<pre><code class="language-julia">asg.evaluate(G, asg.denormalize([1.0, 4.5], nzer))
+</code></pre>
+<p>To wrap up a callable object:</p>
+<pre><code class="language-julia">ffit(X) = asg.evalute(G, X, nzer)
+</code></pre>
+<p>The partial integration in the hyper rectangle domain is done by:</p>
+<pre><code class="language-julia">xref = [1.0, 4.5]
+
+# integrate along the 1st dimension
+asg.integrate(G, xref, 1, nzer, xlim = (-1.0, 2.0), nsample = 10)
+
+# with weights
+asg.integrate(G, xref, 1, nzer, xlim = (-1.0, 2.0), nsample = 10, weight = rand(10))
+</code></pre>
+<h3 id="basis-matrix-coefficients-and-stacking">Basis matrix, coefficients and stacking</h3>
+<p>In some applications, the interpolation coefficients and basis basis matrix are 
+required explicitly.
+The package provides API to extract them as vector and sparse matrix.</p>
+<pre><code class="language-julia"># number of the nodes
+length(G)
+
+# basis matrix at the nodes as a sparse lower-triangle matrix of length(G)^2
+asg.basis_matrix(G)
+
+# interpolation coefficient as a vector of length(G) elements
+asg.interpcoef(G)
+</code></pre>
+<p>The stacked nodes in the hypercube can be extracted as:</p>
+<pre><code class="language-julia"># as a length(G) * d dense matrix
+asg.vectorize_x(G)
+</code></pre>
+<p>There are more functions to stack other information of the interpolant.
+Please check our lower level control section for more details.</p>
+<p>The basis matrix can be evaluated at points other than the supporting nodes:</p>
+<pre><code class="language-julia"># evalute basis matrix/vector at point [.5,.5] in the normalized hypercube
+asg.basis_matrix([0.5,0.5], G)
+
+# evaluate basis matrix at multiple points in the normalized hypercube
+xtest = rand(10,2)
+asg.basis_matrix(xtest, G)
+</code></pre>
+<p>These functions provide another way of using this package.
+Users that are experienced in other interpolation packages may find it familiar,
+even though there can be significant performance loss.</p>
+<h3 id="regular-sparse-grid-rsg">Regular sparse grid (RSG)</h3>
+<p>In addition to ASG, this package also implements regular sparse grid (RSG) which
+generates anisotropic sparse grid multi-linear interpolants without adaption.
+In some cases, shutting down adaption can significantly accelarate the training process at a cost of capturing local curvatures.</p>
+<p>The <code>RegularSparseGrid{d}</code> shares exactly the same API and syntax as <code>AdaptiveSparseGrid{d}</code>,
+while only some lower level control methods are not applicable.
+Users who do not need those lower level control of the grid structure can safely ignore
+the difference.</p>
+<pre><code class="language-julia"># create an RSG instance by specifying the max_depth of the whole node lattice
+# and the the max_depth along each dimension
+G = asg.RegularSparseGrid{2}(7, (5,5))
+
+asg.train!(G, X -&gt; sin(X[1]*4) + cos(X[2]*4), printlevel = &quot;iter&quot;)
+
+asg.evaluate(G, rand(2))
+
+xref = [0.5,0.5]
+asg.integrate(G, xref, 1, xlim = (0.0, 1.0), nsamples = 10)
+
+nzer = asg.Normalizer{2}((-1.0, 3.0), (2.0, 7.0))
+
+# Not like ASG, the RSG can be re-trained because the grid is fixed
+f2fit(X) = sin(X[1]*4) + cos(X[2]*4)
+train!(G, X01 -&gt; f2fit(asg.normalize(X, nzer)))
+
+asg.evaluate(G, [1.0, 4.5], nzer)
+
+xref = [1.0, 4.5]
+asg.integrate(G, xref, 1, nzer, xlim = (-1.0, 2.0), nsample = 10)
+
+length(G)
+
+asg.basis_matrix(G)
+asg.interpcoef(G)
+
+asg.vectorize_x(G)
+
+asg.basis_matrix([0.5,0.5], G)
+xtest = rand(10,2)
+asg.basis_matrix(xtest, G)
+</code></pre>
+<p>To unlock the full power and API availabilty, one can convert it to an ASG interpolant:</p>
+<pre><code class="language-julia">G2 = asg.convert2asg(G)
+</code></pre>
+<p>The converted ASG interpolant inherits everything of the original RSG interpolant.
+However, the tolerance, even if you specify them in <code>convert2asg</code>, is no longer consistent with what is really going on there. The value of tolerance is unreliable then.</p>
+<h2 id="reference">Reference</h2>
+<ul>
+<li>Schaab, A., &amp; Zhang, A. (2022). Dynamic programming in continuous time with adaptive sparse grids. Available at SSRN 4125702.</li>
+<li>Schiekofer, T. (1998). <em>Die Methode der Finiten Differenzen auf d unnen Gittern zur L osung elliptischer und parabolischer partieller Di erentialgleichungen</em> (Doctoral dissertation, PhD thesis, Universit at Bonn).</li>
+<li>Griebel, M. (1998). Adaptive sparse grid multilevel methods for elliptic PDEs based on finite differences. <em>Computing</em>, <em>61</em>, 151-179.</li>
+</ul>
+<p>This project is also inspired by:</p>
+<ul>
+<li><a href="https://github.com/jacobadenbaum/AdaptiveSparseGrids.jl">AdaptiveSparseGrids.jl</a> by Jacob Adenbaum</li>
+<li><a href="https://github.com/baxmittens/DistributedSparseGrids.jl">DistributedSparseGrids.jl</a> by Max Bittens and Daniel S. Katz</li>
+<li><a href="https://github.com/SGpp/SGpp">SGpp.jl</a> by SG++ development team</li>
+</ul>
+<h2 id="license">License</h2>
+<p>This project is licensed under the <a href="LICENSE">MIT License</a>.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="math/" class="btn btn-neutral float-right" title="Math and programming abstraction">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+      <span><a href="math/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = ".";</script>
+    <script src="js/theme_extra.js"></script>
+    <script src="js/theme.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
+
+<!--
+MkDocs version : 1.6.1
+Build Date UTC : 2025-02-06 02:43:44.515828+00:00
+-->
