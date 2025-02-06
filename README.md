@@ -4,6 +4,8 @@
 
 Everyone is more than welcome to try and make feedback.
 
+[**Documentation**](https://clpr.github.io/AdaptiveSG.jl/)
+
 ## Functionality & Features
 
 - **ASG Interpolation Over a Hypercube**: Train an ASG interpolant within a hypercube or hyper-rectangle, evaluate the interpolant, and make structural modifications to the grid. Update interpolation coefficients to reflect these grid adjustments.
