@@ -1,6 +1,7 @@
 # AdaptiveSG.jl (Dev)
 
-`AdaptiveSG.jl` is a development package for multi-linear adaptive sparse grid (ASG) interpolation. While the API is under active refinement, core functionality is fully operational. To experiment with this package, users may clone the repository and run `include("src/AdaptiveSG.jl")` to import the module.
+`AdaptiveSG.jl` is a development package for multi-linear adaptive sparse grid (ASG) interpolation. While the API is under active refinement, core functionality is fully operational.
+To install this package, use `add https://github.com/Clpr/AdaptiveSG.jl.git` under the Pkg mode inside Julia.
 
 Everyone is more than welcome to try and make feedback.
 
@@ -37,7 +38,7 @@ Everyone is more than welcome to try and make feedback.
 There are quick-start examples to train your first multi-linear ASG model.
 
 ```julia
-asg = include("PATH_TO_THIS_PROJECT/src/AdaptiveSG.jl")
+import AdaptiveSG as asg
 
 # display available structs and functions
 varinfo(asg)
