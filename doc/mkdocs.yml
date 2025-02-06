@@ -1,0 +1,24 @@
+site_name: AdaptiveSG.jl
+
+# Theme
+theme:
+  name: readthedocs
+  highlightjs: true
+  hljs_languages:
+    - julia
+
+# MathJax support
+extra_javascript: 
+  - https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML
+
+markdown_extensions:
+  - mdx_math  # python-markdown-math extension
+
+# Navigation
+nav:
+  - Home: index.md
+  - Math and programming abstraction: math.md
+  - Lower level API: lower_level_control.md
+  - Examples: examples.md
+  # - API: api.md
+  - Limitations and discussion: issues.md
