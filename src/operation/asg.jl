@@ -14,6 +14,20 @@ end # Base.length()
 
 # ------------------------------------------------------------------------------
 """
+    get_ghost_stepsize(lmax::Int)::Float64
+
+Return the ghost mesh step size `h` of the underlying nodal grid, given the max-
+imum level `lmax`. The ghost mesh step size is the mesh step size of the largest
+level. In a multi-dimensional case the largest level is NOT equal to the depth 
+of the ASG tree but along each dimension.
+"""
+function get_ghost_stepsize(lmax::Int)::Float64
+    return 1.0 / power2(lmax - 1)
+end # get_ghost_stepsize()
+
+
+# ------------------------------------------------------------------------------
+"""
     get_ghost_stepsize(G::AdaptiveSparseGrid{d})::Vector{Float64} where d
 
 Return the ghost mesh step size `h` of the underlying nodal grid, along each di-
