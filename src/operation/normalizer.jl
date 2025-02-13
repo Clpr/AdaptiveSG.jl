@@ -161,3 +161,25 @@ function normalize(f2fit::Function, nzer::Normalizer{d})::Function where d
 end
 
 
+
+
+
+
+
+# ------------------------------------------------------------------------------
+"""
+    clamp(x::Real, nzer::Normalizer{d}, dims::Int) where d
+
+Clamp the input scalar `x` to the domain `[0,1]` using the `Normalizer{d}`,
+where `dims` is the dimension of the scalar belonging to.
+"""
+function Base.clamp(x::Real, nzer::Normalizer{d}, dims::Int) where d
+    return clamp(x, nzer.lb[dims], nzer.ub[dims])
+end
+# ------------------------------------------------------------------------------
+function Base.clamp(
+    x   ::AbstractVector,
+    nzer::Normalizer{d}
+) where d
+    return clamp.(x, nzer.lb, nzer.ub)
+end
