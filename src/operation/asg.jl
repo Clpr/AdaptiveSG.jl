@@ -49,6 +49,8 @@ end # get_nodal_stepsize()
     get_maxlevels(G::AdaptiveSparseGrid{d})::Vector{Int} where d
 
 Return the maximum levels of the adaptive sparse grid `G` along each dimension.
+This function computes max_levels from the ground but not trust the recorded
+`max_levels` field of `G`.
 
 ## Notes
 - If any dimension has no node, then the corresponding level is 0. This is impo-
