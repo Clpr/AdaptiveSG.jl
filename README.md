@@ -23,7 +23,7 @@ Everyone is more than welcome to try and make feedback.
 - **Question**: Why the initialization of `AdaptiveSparseGrid{D}` is separated from its training?
     - **Answer**: This package aims to allow low-level control of the grid structure. By separating the initialization and training, users can customize the grid before training the model. This degree of freedom is necessary in specific scenarios. If some users really want to put initialization and training in one place, a one-line function always works.
 - **Question**: What is the performance?
-    - **Answer**: On my old desktop (Intel i7-9700), it takes about 10-12 mins to train an 6-dimension ASG for a function of CRRA utility shape, using 4 threads. The evaluation is almost free.
+    - **Answer**: Consider a 8-dimension function which has a shape of CRRA utility function. On my old desktop (Intel i7-9700), it takes about 116ms to train an RSG interpolant of $\approx$ 4000 nodes using single thread (however, the time cost of RSG locates mainly in the grid construction but not the training process). As for the ASG, it takes about 500ms to train $\approx$ 6000 nodes using 4 threads at a $1.5\%$ relative tolarence. Notice, with the same number of nodes, ASG is much more accurate than RSG. The evaluation is almost free.
 - **Question**: At most how many nodes are allowed?
     - **Answer**: It depends on your machine also the capacity of the implementation of Hash map. On personal computer, I would recommend the dimensionality $\leq$ 7 to obtain a reasonable performance. For higher dimensionality, I am thinking about incorporating a SQLite engine to manage the grid tree (very far future!).
 - **Question**: Which type of tolerance to use? Absolute or relative?
