@@ -183,3 +183,33 @@ function Base.clamp(
 ) where d
     return clamp.(x, nzer.lb, nzer.ub)
 end
+
+
+
+
+
+# ------------------------------------------------------------------------------
+function Base.LinRange(nzer::Normalizer{d}, dims::Int, n::Int)::LinRange where d
+    return LinRange(nzer.lb[dims], nzer.ub[dims], n)
+end
+
+
+
+
+
+# ------------------------------------------------------------------------------
+function Base.rand(nzer::Nzer, n::Int)
+    # RANDOM NUMBER IN A SPECIFIC HYPER-RECTANGLE DOMAIN
+    # nzer: Nzer{D} - a domain ⊂ R^D
+    # n: Int - number of random numbers
+
+    D = nzer.lb |> length
+    X = rand(n, D)
+
+    # scaling each column
+    for j in 1:D
+        X[:,j] = nzer.lb[j] .+ X[:,j] .* (nzer.ub[j] - nzer.lb[j])
+    end # j
+
+    return X
+end # rand
