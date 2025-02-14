@@ -23,12 +23,12 @@ function update!(G::AdaptiveSparseGrid{d}) where d
     for (node, nval) in pairs(G.nv)
         if !isvalid(nval)
             x  = get_x(node)
-            f  = evalaute(
+            f  = _evaluate_conditional(
                 G, x,
                 untildepth = 0,
                 validonly  = true
             )
-            ff = evaluate(
+            ff = _evaluate_conditional(
                 G, x,
                 untildepth = node.depth - 1,
                 validonly  = true
@@ -72,7 +72,7 @@ function update!(
         if !isvalid(nval)
             x = get_x(node)
             f = f2fit(x)
-            α = f - evaluate(
+            α = f - _evaluate_conditional(
                 G, x, 
                 untildepth = node.depth - 1,
                 validonly  = true
@@ -130,7 +130,7 @@ function update_all!(
             if node.depth == lnow
                 x = get_x(node)
                 f = f2fit(x)
-                α = f - evaluate(
+                α = f - _evaluate_conditional(
                     G, x,
                     untildepth = node.depth - 1,
                     validonly  = true
@@ -192,7 +192,7 @@ function update_all!(
             if node.depth == lnow
                 x = get_x(node)
                 f = fnew[node]
-                α = f - evaluate(
+                α = f - _evaluate_conditional(
                     G, x,
                     untildepth = node.depth - 1,
                     validonly  = true
@@ -231,7 +231,7 @@ function update_all!(
             if node.depth == lnow
                 x = get_x(node)
                 f = fnew[node]
-                α = f - evaluate(
+                α = f - _evaluate_conditional(
                     G, x,
                     untildepth = node.depth - 1,
                     validonly  = true

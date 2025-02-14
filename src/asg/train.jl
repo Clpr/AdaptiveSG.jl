@@ -294,7 +294,7 @@ function train!(
             if node.depth == lnow
                 x = get_x(node)
                 f = f2fit(x)
-                α = f - evaluate(
+                α = f - _evaluate_conditional(
                     G, x,
                     untildepth = node.depth - 1,
                     validonly  = true
