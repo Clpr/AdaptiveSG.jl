@@ -198,16 +198,15 @@ end
 
 
 # ------------------------------------------------------------------------------
-function Base.rand(nzer::Nzer, n::Int)
+function Base.rand(nzer::Normalizer{d}, n::Int)::Matrix{Float64} where {d}
     # RANDOM NUMBER IN A SPECIFIC HYPER-RECTANGLE DOMAIN
     # nzer: Nzer{D} - a domain ⊂ R^D
     # n: Int - number of random numbers
 
-    D = nzer.lb |> length
-    X = rand(n, D)
+    X = rand(n, d)
 
     # scaling each column
-    for j in 1:D
+    for j in 1:d
         X[:,j] = nzer.lb[j] .+ X[:,j] .* (nzer.ub[j] - nzer.lb[j])
     end # j
 
