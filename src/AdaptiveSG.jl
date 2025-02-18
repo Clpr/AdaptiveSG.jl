@@ -4,6 +4,7 @@ module AdaptiveSG
     using LinearAlgebra, SparseArrays
     using StaticArrays
     using Dictionaries
+    import JSON3
     
     export Dictionary
     export SparseMatrixCSC, SparseVector
@@ -11,6 +12,7 @@ module AdaptiveSG
     include("datatypes/datatypes.jl") # data structures
 
     include("io/vectorize.jl") # grid structure vectorization
+    include("io/serialize.jl") # grid structure serialization
 
     include("common/math.jl")      # math (pure) functions
     include("common/common.jl")    # common helper functions
