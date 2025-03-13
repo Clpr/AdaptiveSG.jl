@@ -12,10 +12,10 @@ export normalize_dist_along, denormalize_dist_along
 Normalize the input vector `x` to the domain `[0,1]^d` using the `Normalizer{d}`
 """
 function normalize(
-    x::AbstractVector{Float64}, 
+    x::AbstractVector, 
     nzer::Normalizer{d}
 )::SVector{d,Float64} where d
-    if length(x) != d; throw(ArgumentError("length(x) != d")); end
+    if length(x) != d; throw(ArgumentError("length(x) = $(length(x)) != d = $d")); end
     return SVector{d,Float64}([
         (x[i] - nzer.lb[i]) / nzer.gap[i]
         for i in 1:length(x)

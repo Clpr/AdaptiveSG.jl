@@ -33,4 +33,6 @@ module AdaptiveSG
     include("asg/diff.jl")     # Gradient approximation
     include("asg/integrate.jl") # Numerical integration of ASG/RSG interpolants
 
+    include("wrapper.jl") # A convenient wrapper (will replace the current API)
+
 end # AdaptiveSG
