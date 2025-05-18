@@ -92,7 +92,11 @@ function Base.stack(srsg::ScaledRSG{D}) where D
     return X01
 end
 # ------------------------------------------------------------------------------
-function update_all!(srsg::ScaledRSG{D}, Ynew::AbstractVector) where D
+function update_all!(
+    srsg::ScaledRSG{D}, 
+    Ynew::AbstractVector ;
+    printlevel::String = "final",
+) where D
     @assert length(srsg.sg) == length(Ynew) "Ynew must have length $(length(srsg.sg))"
 
     update_all!(
@@ -100,7 +104,8 @@ function update_all!(srsg::ScaledRSG{D}, Ynew::AbstractVector) where D
         Dictionary{Node{D}, Float64}(
             srsg.sg.nv |> keys,
             Ynew,
-        )
+        ),
+        printlevel = printlevel,
     )
 
     return nothing
