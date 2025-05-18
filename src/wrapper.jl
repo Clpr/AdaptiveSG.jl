@@ -25,7 +25,7 @@ asg.basis_matrix(m, rand(5))
 
 asg.interpcoef(m)
 
-asg.update_all!(m, m |> length |> rand)
+asg.update_all!(m, m |> length |> rand, printlevel = "final")
 
 size(m)
 
@@ -92,7 +92,11 @@ function Base.stack(srsg::ScaledRSG{D}) where D
     return X01
 end
 # ------------------------------------------------------------------------------
-function update_all!(srsg::ScaledRSG{D}, Ynew::AbstractVector) where D
+function update_all!(
+    srsg::ScaledRSG{D}, 
+    Ynew::AbstractVector ;
+    printlevel::String = "final",
+) where D
     @assert length(srsg.sg) == length(Ynew) "Ynew must have length $(length(srsg.sg))"
 
     update_all!(
@@ -100,7 +104,8 @@ function update_all!(srsg::ScaledRSG{D}, Ynew::AbstractVector) where D
         Dictionary{Node{D}, Float64}(
             srsg.sg.nv |> keys,
             Ynew,
-        )
+        ),
+        printlevel = printlevel,
     )
 
     return nothing
@@ -116,34 +121,6 @@ end
 function interpcoef(srsg::ScaledRSG{D}) where D
     return interpcoef(srsg.sg)
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
