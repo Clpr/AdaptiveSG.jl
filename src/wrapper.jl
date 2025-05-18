@@ -25,7 +25,7 @@ asg.basis_matrix(m, rand(5))
 
 asg.interpcoef(m)
 
-asg.update_all!(m, m |> length |> rand)
+asg.update_all!(m, m |> length |> rand, printlevel = "final")
 
 size(m)
 
@@ -121,34 +121,6 @@ end
 function interpcoef(srsg::ScaledRSG{D}) where D
     return interpcoef(srsg.sg)
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
