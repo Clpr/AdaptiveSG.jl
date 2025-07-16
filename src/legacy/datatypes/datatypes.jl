@@ -1,11 +1,14 @@
+export AbstractSparseGrid
+
 export Node, NodeValue
-export AbstractSparseGrid, AbstractLinearStencil
 export AdaptiveSparseGrid
 export RegularSparseGrid
 export Normalizer
 
 
-# ------------------------------------------------------------------------------
+#=~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+SECTION: Abstract types
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=#
 """
     AbstractSparseGrid{d} <: Any
 
@@ -15,13 +18,32 @@ and methods for sparse grid types.
 abstract type AbstractSparseGrid{d} <: Any end
 
 
-# ------------------------------------------------------------------------------
-"""
-    AbstractLinearStencil{d} <: Any
 
-An abstract type for linear stencil types.
-"""
-abstract type AbstractLinearStencil{d} <: Any end
+#=~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+SECTION: Consolidated node and node coefficient stacking
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=#
+# nodes: N * D for levels, N * D for indices, N for depth
+# coefficients: N for nodal, N for hierarchical (interpolation coef)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # ------------------------------------------------------------------------------
