@@ -1,51 +1,252 @@
 # AdaptiveSG.jl
 
-`AdaptiveSG.jl` is a package for multi-linear adaptive sparse grid (ASG) interpolation. While the API is under active refinement, core functionality is fully operational.
-To install this package, use `add https://github.com/Clpr/AdaptiveSG.jl.git` under the Pkg mode inside Julia.
+`AdaptiveSG.jl` is a package for high-performance multi-linear adaptive sparse grid (ASG) interpolation.
+To install this package, use `add AdaptiveSG` under the Pkg mode inside Julia.
 
 Everyone is more than welcome to try and make feedback.
 
-**Documentation**: [https://clpr.github.io/AdaptiveSG.jl/](https://clpr.github.io/AdaptiveSG.jl/)
+<!-- **Documentation**: [https://clpr.github.io/AdaptiveSG.jl/](https://clpr.github.io/AdaptiveSG.jl/) -->
 
 
 ## Requirement
 
-`Julia>=1.9`. Earlier version may work but I have not tested them. The current version has a minimalism of pacakge dependency:
-
-- `Dictionaries.jl`
-- `StaticArrays.jl`
+`Julia>=1.9`.
 
 
+## Usage
+
+```julia
+import AdaptiveSG as asg
+
+# ------------------------------------------------------------------------------
+# Initialization
+# ------------------------------------------------------------------------------
+
+# Dimensionality: 3
+D = 3
+
+# Create an empty R^D --> R sparse grid interpolant in a custom domain
+G = asg.SparseGridInterpolant(D, lb = 1:D, ub = 2:D+1)
+
+# Create an empty R^D --> R sparse grid interpolant in the hypercube [0,1]^D
+G = asg.SparseGridInterpolant(D)
 
 
-## Some Q&A
+# ------------------------------------------------------------------------------
+# Training
+# ------------------------------------------------------------------------------
 
-- **Question**: Why the initialization of `AdaptiveSparseGrid{D}` is separated from its training?
-    - **Answer**: This package aims to allow low-level control of the grid structure. By separating the initialization and training, users can customize the grid before training the model. This degree of freedom is necessary in specific scenarios. If some users really want to put initialization and training in one place, a one-line function always works.
-- **Question**: What is the performance?
-    - **Answer**: Consider a 8-dimension function which has a shape of CRRA utility function. On my old desktop (Intel i7-9700), it takes about 116ms to train an RSG interpolant of $\approx$ 4000 nodes using single thread (however, the time cost of RSG locates mainly in the grid construction but not the training process). As for the ASG, it takes about 500ms to train $\approx$ 6000 nodes using 4 threads at a $1.5\%$ relative tolarence. Notice, with the same number of nodes, ASG is much more accurate than RSG. The evaluation is almost free.
-- **Question**: At most how many nodes are allowed?
-    - **Answer**: It depends on your machine also the capacity of the implementation of Hash map. On personal computer, I would recommend the dimensionality $\leq$ 7 to obtain a reasonable performance. For higher dimensionality, I am thinking about incorporating a SQLite engine to manage the grid tree (very far future!).
-- **Question**: Which type of tolerance to use? Absolute or relative?
-    - **Answer**: Either works but:
-        - Absolute tolerance always works but you need to estimate the scale of the original function to trade off precision and time cost.
-        - Relative tolerance is scale-free and usually faster and requiring less nodes than absolute tolerance. 
-        - However, due to the definition of relative tolerance, it does not work well in the neighbor of $f(x)=0$. Even though the training algorithm automatically switches to absolute tolerance in this case, it still tends to put many annoyingly useless nodes there. So, if your original function $f$ crosses zero frequently, then use absolute tolerance. 
-- **Question**: Do you have a method to delete specific node(s) from the grid?
-    - **Answer**: Officially no. The current implementation emphasizes the reachability of the underlying tree. This property allows us to analytically visit children and parent nodes while free from undefined behaviors. Thus, the training algorithm only adds new nodes but never delete existing nodes. However, if you are 100% sure about what you are doing, then you can always manually `Dictionaries.delete!()` node(s) by manipulating the ordered Dictionary *after* the initial training.
-- **Question**: Training an ASG from zero spends most of the time in trialing nodes that will not be accepted by the algorithm. Anyway to improve this?
-    - **Answer**: Yes. One solution is training an RSG (no cost of trialing nodes) then adapting this RSG one or two steps forward as Schaab & Zhang (2022). I am still working on this and expect a new function `adapt!()` will be delivered in the future. The challenge here is to find a way that maintains some properties of the grid tree during the adaption.
-- **Question**: Will the package support interpolations other than multi-linear?
-    - **Answer**: Maybe. This is an ambitious idea. Theoretically, ASG can work with arbitrary interpolation methods. However, the current design is heavily based on some mathematical conclusions of multi-linear interpolation. I need to find an uniform framework that accommodates arbitrary degree of piecewise polynomial interpolations
-- **Question**: Is multi-linear ASG a monotonic interpolation?
-    - **Answer**: No. The node hierarchy destroys the monotonicity of the ordinary multi-linear interpolation. A recent paper has discussed this idea. If you require monotonic everywhere, then increasing the accuracy, or equivalently increasing the number of supporting nodes can mitigate this issue.
-- **Question**: When I try solving HJB equations or other PDEs with your package, the finite difference method fails. Why?
-    - **Answer**: When solving PDEs with finite difference and approximating the unknown function with an interpolant, the interpolation methods must satisfy specific conditions to keep the monotonicity of the scheme. Check my [blog post](https://clpr.github.io/blogs/post_241111.html) for a discussion about this issue.
-- **Question**: Do you have a plan to support numerical quadrature for ASG?
-    - **Answer**: Of course. This is on my schedule and has high priority. A trapezoid rule of one-dimensional partial integration has been implemented. The multi-dimensional integration is on my schedule
-- **Question**: Does ASG support extrapolation?
-    - **Answer**: By definition, no. Because the compact basis function forcely diminishes any evaluation at any out-of-the-box points to be 0. However, linear extrapolation is possible without changing the compact basis function. This is done by expanding the interpolation at the target outside point using Taylor expansion to the 1st order. Intuitively, evaluating an extrapolation query requires multiple interpolation evalautions, which is much more costly than the interpolation evaluation.
+# Example function to fit
+f2fit(X) = (X .* 2π) .|> sin |> sum
 
+# usage 1: train the interpolant using isotropic regular sparse grid (RSG)
+# accuracy level: 7; isotropic max level per dimension: 5
+asg.train!(
+    G, 
+    f2fit, 
+    7, 
+    5,
+    verbose = true, # display training progress
+)
+
+
+# usage 2: anisotropic regular sparse grid (RSG)
+asg.train!(
+    G, 
+    f2fit, 
+    7, 
+    Tuple(6:D+6-1), # anisotropic max levels per dimension
+    verbose = true, # display training progress
+)
+
+
+# usage 3: local refinement/adaption after the initial RSG training, using
+#          adaptive sparse grid (ASG)
+#          max depth allowed: 13, tol = 3E-3, tolerance type: absolute
+#          parallel threads enabled
+asg.adapt!(
+    G, f2fit, 13,
+    verbose  = true,
+    tol      = 3e-3,
+    toltype  = :absolute, # or toltype = :relative
+    parallel = true,      # use parallel threads
+)
+
+
+
+# ------------------------------------------------------------------------------
+# Useful operations
+# ------------------------------------------------------------------------------
+
+# Get: size information
+length(G) |> println # number of nodes
+ndims(G)  |> println # dimension of the grid, = 4
+size(G)   |> println # (number of nodes, dimension)
+
+
+# Check: if a point locates in the grid domain
+rand(D) in G
+rand(D) ∈ G
+rand(D) ∉ G
+
+# Clamp a point to the grid domain
+clamp(rand(D) .* 10, G)
+
+# Draw random points in the grid domain
+rand(G)      # a random point in the grid domain
+rand(G, 10)  # 10 random points in the grid domain
+
+# Create a uniform grid along the 2nd dimension with 10 points
+LinRange(G, 2, 10)
+
+# Transform a point between the grid domain and the unit hypercube [0,1]^4
+let x0 = rand(D)
+
+    # hypercube --> grid domain
+    x1 = asg.scale(x0, 0.0, 1.0, to_lb = G.lb, to_ub = G.ub)
+    x2 = asg.scale(
+        x0, 
+        zeros(length(x0)), 
+        ones(length(x0)), 
+        to_lb = G.lb, 
+        to_ub = G.ub
+    )
+
+    # grid domain --> hypercube
+    x3 = asg.scale(x1, G.lb, G.ub)
+    x4 = asg.scale(x2, G.lb, G.ub, to_lb = 0.0, to_ub = 1.0)
+
+    [x0 x1 x2 x3 x4]
+end
+
+# Stack all the supporting grid nodes into a N*D matrix
+nodes = stack(G)
+
+
+# Get the maximum levels of the grid in the grid hierarchy/tree
+asg.maxlevels(G)
+
+
+
+# ------------------------------------------------------------------------------
+# I/O
+# ------------------------------------------------------------------------------
+
+# Serialize the interpolant to a compatability-maximized dictionary
+dat = asg.serialize(G)
+
+# De-serialize the dictionary to an interpolant
+G2 = asg.deserialize(dat)
+
+
+
+# ------------------------------------------------------------------------------
+# Translation to standard interpolation language
+# ------------------------------------------------------------------------------
+
+# get the interpolation/hierarchical coefficients
+C = asg.coefficients(G)
+
+# evaluate the basis function (as a basis vector) at a point
+x = rand(D)
+B = asg.basis(x, G)
+
+# (manually) evaluate the interpolant at the point
+sum(B .* C)
+
+# evaluate the basis function at multiple points
+X = rand(10, D)  # 10 points
+B = asg.basis(X, G)
+
+# (default) evaluate the basis function at all the grid nodes
+B = asg.basis(G)
+@assert size(B) == (length(G), length(G))
+
+# construct: hierarchization and de-hierarchization matrices
+H = asg.hierarchization_matrix(G)
+E = asg.dehierarchization_matrix(G) # equivalent to `asg.basis(G)`
+
+
+
+# ------------------------------------------------------------------------------
+# Evaluation
+# ------------------------------------------------------------------------------
+
+# default: dimensional check applies, no extrapolation
+x = rand(D)
+G(x) 
+
+# no dimensional check, (linear) extrapolation allowed
+x = rand(D) .+ 1.0
+G(
+    x, 
+    safe = false, 
+    extrapolate = true
+)
+
+
+
+# ------------------------------------------------------------------------------
+# A 2-D visualization example
+# ------------------------------------------------------------------------------
+
+# mimics: exponential utility function which needs adpation as x --> 0
+f2fit(X) = -1 / (0.1 + sum(X))
+
+G = asg.SparseGridInterpolant(2)
+asg.train!(
+    G, 
+    f2fit, 
+    4, 
+    (3,8),
+    verbose = true, # display training progress
+)
+asg.adapt!(
+    G, f2fit, 20,
+    verbose = true,
+    tol     = 1e-5,
+    toltype = :absolute,
+    parallel = false,
+)
+
+
+import Plots as plt
+
+# fig: approximation errors
+fig = plt.surface(
+    LinRange(G, 1, 100),
+    LinRange(G, 2, 100),
+    (x,y) -> G([x,y]) - f2fit([x,y]),
+    camera = (-30,30),
+    alpha = 0.5,
+    colorbar = false,
+    legend = false,
+)
+fig
+
+# fig: grid nodes distribution
+fig = plt.surface(
+    LinRange(G, 1, 100),
+    LinRange(G, 2, 100),
+    (x,y) -> G([x,y]),
+    camera = (-30,30),
+    alpha = 0.5,
+    colorbar = false,
+    legend = false,
+)
+plt.scatter!(
+    fig,
+    (stack(G) |> eachcol)...,
+    G.fvals,
+)
+fig
+```
+
+## Future plan
+
+- Adds practical testing cases
+- Supports sparse quadrature/integration
+- Supports polynomial basis
 
 ## License
 
