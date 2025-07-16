@@ -322,6 +322,10 @@ function adapt!(
         - After the loop, the overlapped children nodes are filtered:
             - only one copy is kept
 
+        - Technical notes:
+
+            - Don't use loop inside the parallel loop, which may cause undefined
+              behavior (would grow invalid and/or wrong children nodes).
 
         ----------------------------------------------------------------------=#
 
@@ -330,28 +334,37 @@ function adapt!(
             for _ in 1:Threads.nthreads()
         ]
             
-        @maybe_threads parallel for iParent in irowParents
+        for j in 1:D
+            @maybe_threads parallel for iParent in irowParents
 
-            tid = Threads.threadid()
+                tid = Threads.threadid()
 
-            lvlParent = G.levels[iParent, :]
-            idxParent = G.indices[iParent, :]
+                lvlParent = G.levels[iParent, :]
+                idxParent = G.indices[iParent, :]
 
-            for j in 1:D, side in (:left, :right)
+                Ll, Il = child(
+                    lvlParent, 
+                    idxParent, 
+                    j, 
+                    side = :left
+                )
+                Lr, Ir = child(
+                    lvlParent, 
+                    idxParent, 
+                    j, 
+                    side = :right
+                )
 
-                # step: grow to the next level, along dimension `j`
-                lvlChild, idxChild = child(lvlParent, idxParent, j, side = side)
+                # step: if the children nodes are valid, do residual fitting
+                if isvalid(Ll, Il)
 
-                # step: if the children node is valid, then do residual fitting
-                if isvalid(lvlChild, idxChild)
-
-                    x    = get_x(lvlChild, idxChild, lb = G.lb, ub = G.ub)
+                    x    = get_x(Ll, Il, lb = G.lb, ub = G.ub)
                     fval = f2fit(x)
                     αval = fval - G(x, safe = false, extrapolate = false)
 
                     if isbig2add(αval,fval,rtol,atol,toltype == :relative)
 
-                        _key = (lvlChild, idxChild)
+                        _key = (Ll,Il)
                         _val = (fval, αval)
 
                         if !haskey(thdres[tid], _key)
@@ -362,9 +375,27 @@ function adapt!(
 
                 end # if
 
-            end # j, side
+                if isvalid(Lr, Ir)
 
-        end # iParent
+                    x    = get_x(Lr, Ir, lb = G.lb, ub = G.ub)
+                    fval = f2fit(x)
+                    αval = fval - G(x, safe = false, extrapolate = false)
+
+                    if isbig2add(αval,fval,rtol,atol,toltype == :relative)
+
+                        _key = (Lr,Ir)
+                        _val = (fval, αval)
+
+                        if !haskey(thdres[tid], _key)
+                            thdres[tid][_key] = _val
+                        end
+
+                    end # if
+
+                end # if
+
+            end # iParent
+        end # j
 
 
         # step: early stop if no new children nodes are found
