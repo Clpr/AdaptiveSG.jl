@@ -401,7 +401,7 @@ end
 SECTION: Node arithmetics
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=#
 """
-    isvalid(Ls::Vector{Int}, Is::Vector{Int})::Bool
+    isvalid(Ls::AbstractVector{Int}, Is::AbstractVector{Int})::Bool
 
 Check if the given `d`-dim node is valid.
 
@@ -415,7 +415,7 @@ wards the left and (l=2,i=2) towards the right.
     - for a dimension, if level > 2, then index is odd and positive
 - `depth > 0` must be true
 """
-function isvalid(Ls::Vector{Int}, Is::Vector{Int})::Bool
+function isvalid(Ls::AbstractVector{Int}, Is::AbstractVector{Int})::Bool
     # check dimension
     d = length(Ls)
     if d < 1; return false; end
